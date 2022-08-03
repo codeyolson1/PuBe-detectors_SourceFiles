@@ -1,0 +1,52 @@
+/gps/particle neutron
+/gps/ene/type User
+/gps/hist/type energy
+/gps/hist/point 	1.00E-11	0
+#/gps/hist/point 	1.00E-07	0
+#/gps/hist/point 	4.14E-07	2.83E-10
+#/gps/hist/point 	8.76E-07	2.79E-10
+#/gps/hist/point 	1.86E-06	1.34E-09
+#/gps/hist/point 	5.04E-06	3.62E-09
+#/gps/hist/point 	1.07E-05	5.04E-09
+#/gps/hist/point 	3.73E-05	3.75E-08
+/gps/hist/point 	1.01E-04	0.000000431
+/gps/hist/point 	2.14E-04	0.000000604
+/gps/hist/point 	4.54E-04	0.00000178
+/gps/hist/point 	1.58E-03	0.0000132
+/gps/hist/point 	3.35E-03	0.0000526
+/gps/hist/point 	7.10E-03	0.000174
+/gps/hist/point 	1.50E-02	0.000562
+/gps/hist/point 	2.19E-02	0.000754
+/gps/hist/point 	2.42E-02	0.000306
+/gps/hist/point 	2.61E-02	0.000273
+/gps/hist/point 	3.18E-02	0.0013
+/gps/hist/point 	4.09E-02	0.000982
+/gps/hist/point 	6.74E-02	0.00564
+/gps/hist/point 	1.11E-01	0.0121
+/gps/hist/point 	1.83E-01	0.0248
+/gps/hist/point 	2.97E-01	0.0467
+/gps/hist/point 	3.69E-01	0.0316
+/gps/hist/point 	4.98E-01	0.0582
+/gps/hist/point 	6.08E-01	0.0479
+/gps/hist/point 	7.43E-01	0.0567
+/gps/hist/point 	8.23E-01	0.0299
+/gps/hist/point 	1.00E+00	0.0649
+/gps/hist/point 	1.35E+00	0.111
+/gps/hist/point 	1.65E+00	0.0784
+/gps/hist/point 	1.92E+00	0.0615
+/gps/hist/point 	2.23E+00	0.0595
+/gps/hist/point 	2.35E+00	0.0207
+/gps/hist/point 	2.37E+00	0.00339
+/gps/hist/point 	2.47E+00	0.0169
+/gps/hist/point 	2.73E+00	0.0375
+/gps/hist/point 	3.01E+00	0.0349
+/gps/hist/point 	3.68E+00	0.065
+/gps/hist/point 	4.97E+00	0.0715
+/gps/hist/point 	6.07E+00	0.0291
+/gps/hist/point 	7.41E+00	0.0162
+/gps/hist/point 	8.61E+00	0.00616
+/gps/hist/point 	1.00E+01	0.0031
+/gps/hist/point 	1.22E+01	0.0015
+/gps/hist/point 	1.42E+01	0.000315
+/gps/hist/point 	1.73E+01	0.000117
+

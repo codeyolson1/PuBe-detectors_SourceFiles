@@ -1,0 +1,6 @@
+/control/execute he3Spec.mac
+
+# Commands:
+/vis/disable
+/run/beamOn 100000
+/vis/enable

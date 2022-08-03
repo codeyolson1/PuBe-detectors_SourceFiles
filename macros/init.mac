@@ -1,0 +1,16 @@
+# Macro for initialization of interactive session
+
+# Set verbosities
+/control/verbose 2
+/control/saveHistory
+/run/verbose 1
+
+# Multithreading info:
+/run/useMaximumLogicalCores
+/control/cout/useBuffer false
+
+# Initialize kernel
+/run/initialize
+
+# Visualization settings
+#/control/execute vis.mac
