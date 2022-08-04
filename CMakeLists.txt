@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.8...3.18)
 if(${CMAKE_VERSION} VERSION_LESS 3.12)
   cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
 endif()
-project(Helium3Detector)
+project(Pu-BeDetectors)
 
 #list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
 #find_package(ROOT REQUIRED COMPONENTS)
@@ -42,9 +42,9 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable(he3 main.cc ${sources} ${headers})
+add_executable(pu-be main.cc ${sources} ${headers})
 #if(ROOT_FOUND)
-target_link_libraries(he3 ${Geant4_LIBRARIES} ${G4mpi_LIBRARIES}) #add ${ROOT_LIBRARIES} here if needed
+target_link_libraries(pu-be ${Geant4_LIBRARIES} ${G4mpi_LIBRARIES}) #add ${ROOT_LIBRARIES} here if needed
 #else()
 #target_link_libraries(reactorBay ${Geant4_LIBRARIES})
 #endif()
@@ -70,8 +70,8 @@ target_link_libraries(he3 ${Geant4_LIBRARIES} ${G4mpi_LIBRARIES}) #add ${ROOT_LI
 # For internal Geant4 use - but has no effect if you build this
 # example standalone
 #
-add_custom_target(Helium3Detector DEPENDS he3)
+add_custom_target(Pu-BeDetectors DEPENDS pu-be)
 
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
-install(TARGETS he3 DESTINATION bin)
+install(TARGETS pu-be DESTINATION bin)
