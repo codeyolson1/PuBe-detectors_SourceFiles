@@ -1,4 +1,3 @@
 build/
 .vscode/
 .vscode/settings.json
-main.cc
