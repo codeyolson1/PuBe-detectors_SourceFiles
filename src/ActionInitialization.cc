@@ -7,7 +7,6 @@
 #include "ActionInitialization.hh"
 #include "PrimaryGeneratorAction.hh"
 #include "RunAction.hh"
-#include "EventAction.hh"
 #include "G4Threading.hh"
 
 ActionInitialization::ActionInitialization() : G4VUserActionInitialization()
@@ -34,6 +33,5 @@ void ActionInitialization::BuildForMaster() const
 void ActionInitialization::Build() const
 {
   SetUserAction(new PrimaryGeneratorAction);
-  SetUserAction(new EventAction);
   SetUserAction(new RunAction());
 }
