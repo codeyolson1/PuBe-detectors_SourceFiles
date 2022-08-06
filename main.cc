@@ -1,6 +1,5 @@
 
 #include "G4MTRunManager.hh"
-
 #include "G4RunManager.hh"
 
 
@@ -14,7 +13,6 @@
 #include "QGSP_BIC_AllHP.hh"
 #include "FTFP_BERT_HP.hh"
 #include "globals.hh"
-#include "PhysicsList.hh"
 #include "G4ThermalNeutrons.hh"
 
 int main(int argc, char** argv)
@@ -33,8 +31,8 @@ int main(int argc, char** argv)
 
   G4VModularPhysicsList* physicsList = new QGSP_BIC_AllHP();
   physicsList->RegisterPhysics( new G4ThermalNeutrons());
-
-  runManager->SetUserInitialization(new DetectorConstruction());
+  G4bool isHe3 = true;
+  runManager->SetUserInitialization(new DetectorConstruction(isHe3));
   //G4VModularPhysicsList* physicsList = new QGSP_BIC_HP();
   physicsList->SetDefaultCutValue(700*CLHEP::um);
   physicsList->SetVerboseLevel(1);
@@ -66,6 +64,7 @@ int main(int argc, char** argv)
     //UImanager->ApplyCommand("/control/macroPath /reactorBay_sourceFiles");
     UImanager->ApplyCommand("/control/macroPath ../macros/");
     UImanager->ApplyCommand("/control/execute init.mac");
+    UImanager->ApplyCommand("/control/execute vis.mac");
     ui->SessionStart();
     delete ui;
   }
