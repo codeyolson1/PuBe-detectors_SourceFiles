@@ -287,7 +287,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   tableX = 121.92*cm;
   tableY = 182.88*cm;
   tableZ = 3.175*cm;
-  G4ThreeVector tableCenter = G4ThreeVector(worldX*0.5 - tableX*0.5 - sWallX - 71.12*cm - 1.27*cm, -worldY*0.5 + tableY*0.5 + 30.48*cm + 2.54*cm, -worldZ*0.5 - tableZ*0.5 + floorZ + 76.2*cm + 5.08*cm);
+  G4ThreeVector tableCenter = G4ThreeVector(worldX*0.5 - sWallX - 71.12*cm - 1.27*cm, -worldY*0.5 + tableY*0.5 + 30.48*cm + 2.54*cm, -worldZ*0.5 - tableZ*0.5 + floorZ + 76.2*cm + 5.08*cm);
   // Construction
   G4Box* tableTopSolid = new G4Box("TableTop", 0.5*tableX, 0.5*tableY, 0.5*tableZ);
   G4LogicalVolume* tableTopLogic = new G4LogicalVolume(tableTopSolid, fmats["steel"], "TableTop");
@@ -298,28 +298,28 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4double shieldTopD = 38.1*cm;
   G4double shieldBottomD = 33.02*cm;
   G4double shieldH = 45.72*cm;
+  G4double sourceChamberH = 40.*cm;
   G4ThreeVector shieldCenter = G4ThreeVector(tableCenter.x(), tableCenter.y() - tableY*0.5 + shieldBottomD*0.5, tableCenter.z() + tableZ*0.5 + shieldH*0.5);
+  G4cout << "Shield Center: " << shieldCenter.getX()/cm << ", " << shieldCenter.getY()/cm << ", " << shieldCenter.getZ()/cm << G4endl;
   // Construction:
   // BeamPort
   G4Tubs* beamDummy = new G4Tubs("BeamDummy", 0., 2.407*cm, 19.05*0.5*cm, 0., 360.*deg);
   G4Cons* shieldDummy = new G4Cons("ShieldDummy", 0, shieldBottomD*0.5, 0, shieldTopD*0.5, shieldH*0.5, 0, 360.*deg);
-  G4Tubs* sourceDummy = new G4Tubs("SourceDummy", 0, 0.5*2.53492*cm, 0.5*5.461*cm, 0, 360.*deg);
-  G4VSolid* shieldDummySource = new G4SubtractionSolid("ShieldDummySource", shieldDummy, sourceDummy, 0, G4ThreeVector(0, 0, -6.7675*cm));
+  G4Tubs* sourceSlotDummy = new G4Tubs("SourceDummy", 0, 0.5*2.53492*cm, 0.5*40.*cm, 0, 360.*deg);
+  G4VSolid* shieldDummySource = new G4SubtractionSolid("ShieldDummySource", shieldDummy, sourceSlotDummy, 0, G4ThreeVector(0, 0, -shieldH*0.5 + sourceChamberH*0.5 + (shieldH - sourceChamberH) + 0.1*mm));
   G4RotationMatrix* rotateX = new G4RotationMatrix();
   rotateX->rotateX(90.*deg);  
-  G4VSolid* beamIntersection = new G4IntersectionSolid("BeamIntersection", shieldDummySource, beamDummy, rotateX, G4ThreeVector(0, 9.525*cm, -6.7675*cm));
-  G4VSolid* shieldSolid = new G4SubtractionSolid("ShieldSolid", shieldDummySource, beamDummy, 0, G4ThreeVector(0, 9.525*cm, -6.7675*cm));
+  G4Tubs* beamIntersectionDummy = new G4Tubs("BeamDummy", 1.907*cm, 2.407*cm, 19.05*0.5*cm, 0., 360.*deg);
+  G4VSolid* beamIntersection = new G4IntersectionSolid("BeamIntersection", shieldDummySource, beamIntersectionDummy, rotateX, G4ThreeVector(0, 9.525*cm, -6.7675*cm));
+  G4VSolid* shieldSolid = new G4SubtractionSolid("ShieldSolid", shieldDummySource, beamDummy, rotateX, G4ThreeVector(0, 9.525*cm, -6.7675*cm));
   G4LogicalVolume* shieldLogic = new G4LogicalVolume(shieldSolid, fmats["BPoly5"], "Shield");
   new G4PVPlacement(0, shieldCenter, shieldLogic, "Shield", logicWorld, false, 0, checkOverlaps);
-  G4Tubs* beamDummyAir = new G4Tubs("BeamDummyAir", 0., 1.907*cm, 19.05*cm, 0., 360.*deg);
-  G4VSolid* beamSolid = new G4SubtractionSolid("BeamSolid", beamIntersection, beamDummyAir, rotateX, G4ThreeVector(0, 0, -6.7675*cm));
-  G4LogicalVolume* beamLogic = new G4LogicalVolume(beamSolid, fmats["lead"], "BeamSolid");  
-  G4RotationMatrix* rotatebeam = new G4RotationMatrix();
-  rotatebeam->rotateX(-180.*deg);  
-  rotatebeam->rotateY(180.*deg);
-  //new G4PVPlacement(rotatebeam, G4ThreeVector(shieldCenter.x(), shieldCenter.y(), shieldCenter.z()), beamLogic, "BeamSolid", logicWorld, false, 0, checkOverlaps);
-  
-
+  G4LogicalVolume* beamLogic = new G4LogicalVolume(beamIntersection, fmats["lead"], "BeamSolid");  
+  new G4PVPlacement(0, shieldCenter, beamLogic, "BeamSolid", logicWorld, false, 0, checkOverlaps);
+  G4Tubs* beamPlugDummy = new G4Tubs("BeamPlugDummy", 0, 1.907*cm, 19.05*0.5*cm, 0., 360.*deg);
+  G4VSolid* beamPlugIntersection = new G4IntersectionSolid("BeamPlugIntersection", shieldDummySource, beamPlugDummy, rotateX, G4ThreeVector(0, 9.525*cm, -6.7675*cm));
+    G4LogicalVolume* beamPlugLogic = new G4LogicalVolume(beamPlugIntersection, fmats["BPoly5"], "BeamPlugIntersection");  
+  new G4PVPlacement(0, shieldCenter, beamPlugLogic, "BeamPlugIntersection", logicWorld, false, 0, checkOverlaps);
   // Source:
   // Params:
   G4double stainlessD = 2.53492*cm;
@@ -328,42 +328,42 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4double tantalumH = 4.572*cm;
   G4double PuBeD = 2.06756*cm;
   G4double PuBeH = 3.814*cm;
-  G4ThreeVector PuBeCenter = G4ThreeVector(0, 0, 0); // Local coords for shield:
   // Construction:
   G4Tubs* stainlessSolid = new G4Tubs("StainlessShell", 0, 0.5*stainlessD, 0.5*stainlessH, 0, 360.*deg);
   G4LogicalVolume* stainlessLogic = new G4LogicalVolume(stainlessSolid, fmats["steel"], "StainlessShell");
   G4VisAttributes* sourceAttr =  new G4VisAttributes(G4Colour(1.,0.,0.));
   sourceAttr->SetForceSolid(true);
   stainlessLogic->SetVisAttributes(sourceAttr);
-  new G4PVPlacement(0, PuBeCenter, stainlessLogic, "StainlessShell", shieldLogic, false, 0, checkOverlaps);
+  new G4PVPlacement(0,  G4ThreeVector(shieldCenter.x(), shieldCenter.y(), shieldCenter.z() - shieldH*0.5 + stainlessH*0.5 + (shieldH - sourceChamberH) + 0.1*mm), stainlessLogic, "StainlessShell", logicWorld, false, 0, checkOverlaps);
   G4Tubs* tantalumSolid = new G4Tubs("TantalumShell", 0, 0.5*tantalumD, 0.5*tantalumH, 0, 360.*deg);
   G4LogicalVolume* tantalumLogic = new G4LogicalVolume(tantalumSolid, fmats["Tantalum"], "TantalumShell");
   new G4PVPlacement(0, G4ThreeVector(), tantalumLogic, "TantalumShell", stainlessLogic, false, 0, checkOverlaps);
   G4Tubs* PuBeSolid = new G4Tubs("PuBeSource", 0, 0.5*PuBeD, 0.5*PuBeH, 0, 360.*deg);
   G4LogicalVolume* PuBeLogic = new G4LogicalVolume(PuBeSolid, fmats["PuBe"], "PuBeSource");
-  new G4PVPlacement(0, G4ThreeVector(), PuBeLogic, "PuBe Source", tantalumLogic, false, 0, checkOverlaps);
+  new G4PVPlacement(0, G4ThreeVector(), PuBeLogic, "PuBeSource", tantalumLogic, false, 0, checkOverlaps);
   // Detector and Placement:
   if (isHe3) {
     G4double tubeDiam;
     G4double tubeHeight;
     G4double modx, mody, modz;
+
     // Tube and moderator dimensions:
     tubeDiam = 2.54*cm; // With shell
     tubeHeight = 10.*cm;
-    modx = tubeDiam + 4.*cm; mody = tubeDiam + 2.*cm; modz = tubeHeight;
-
+    mody = tubeDiam + 4.*cm; modx = tubeDiam + 2.*cm; modz = tubeHeight + 5.*cm;
+    G4ThreeVector detCenter = G4ThreeVector(shieldCenter.x(), tableCenter.y() - tableY*0.5 + mody*0.5 + 60.96*cm, tableCenter.z() + tableZ*0.5 + modz*0.5);
     // Tube Construction
-    G4Tubs* ssShellSolid = new G4Tubs("SS Shell", 0, 0.5*(tubeDiam + 0.2*cm), 0.5*(tubeHeight + 0.2*cm), 0, 360.*deg);
+    G4Tubs* ssShellSolid = new G4Tubs("SS Shell", 0, 0.5*(tubeDiam), 0.5*(tubeHeight + 5.*cm), 0, 360.*deg);
     G4LogicalVolume* ssShellLogic = new G4LogicalVolume(ssShellSolid, fmats["steel"], "SS Shell");
-    //new G4PVPlacement(0, G4ThreeVector(), ssShellLogic, "SS Shell", logicWorld, false, 0, checkOverlaps); 
+    new G4PVPlacement(0, detCenter, ssShellLogic, "SS Shell", logicWorld, false, 0, checkOverlaps); 
     // Visual Stuff for shells
     G4VisAttributes* shellAttr = new G4VisAttributes(G4Colour(192., 192., 192.)); // silver
     shellAttr->SetForceWireframe(true);
     ssShellLogic->SetVisAttributes(shellAttr);
     // helium3 fill gas:
-    G4Tubs* he3GasSolid = new G4Tubs("He3 Gas", 0, 0.5*(tubeDiam), 0.5*(tubeHeight), 0, 360.*deg);
+    G4Tubs* he3GasSolid = new G4Tubs("He3 Gas", 0, 0.5*(tubeDiam - 0.2*cm), 0.5*(tubeHeight), 0, 360.*deg);
     G4LogicalVolume* he3GasLogic = new G4LogicalVolume(he3GasSolid, fmats["he3"], "He3 Gas");
-    //new G4PVPlacement(0, G4ThreeVector(0, 0, 0), he3GasLogic, "He3 Gas", logicWorld, false, 0, checkOverlaps); 
+    new G4PVPlacement(0, G4ThreeVector(), he3GasLogic, "He3 Gas", ssShellLogic, false, 0, checkOverlaps); 
     G4cout << "Gas volume: " << he3GasSolid->GetCubicVolume()/cm3 << G4endl;
     // Visual Stuff for gas
     G4VisAttributes* gasAttr = new G4VisAttributes(G4Colour(255., 0., 0.)); // red
@@ -372,11 +372,11 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     //Moderator:
     // Dummies for subtraction solid:
     G4Box* moderatorDummy = new G4Box("He3 Moderator Dummy", 0.5*modx, 0.5*mody, 0.5*modz);
-    G4Tubs* moderatorVoidDummy = new G4Tubs("He3 Void Dummy", 0, 0.5*(tubeDiam), 0.5*(tubeHeight + 1*cm), 0, 360.*deg);
+    G4Tubs* moderatorVoidDummy = new G4Tubs("He3 Void Dummy", 0, 0.5*(tubeDiam), 0.5*(modz + 1*cm), 0, 360.*deg);
     // Final solid:
     G4VSolid* he3ModeratorSolid = new G4SubtractionSolid("He3 Moderator", moderatorDummy, moderatorVoidDummy, 0, G4ThreeVector());
     G4LogicalVolume* he3ModeratorLogic = new G4LogicalVolume(he3ModeratorSolid, fmats["poly"], "He3 Moderator");
-    //new G4PVPlacement(0, G4ThreeVector(), he3ModeratorLogic, "He3 Moderator", logicWorld, false, 0, checkOverlaps);
+    new G4PVPlacement(0, detCenter, he3ModeratorLogic, "He3 Moderator", logicWorld, false, 0, checkOverlaps);
     G4cout << "Moderator volume: " << he3ModeratorSolid->GetCubicVolume()/cm3 << G4endl;
     // Visual Stuff for moderator
     G4VisAttributes* moderatorAttr = new G4VisAttributes(G4Colour()); // white
