@@ -26,7 +26,6 @@
 
 Run::Run()
 {
-  EDepPerEvent = {};
 }
 
 //
@@ -42,10 +41,6 @@ void Run::Merge(const G4Run* aRun)
 {
   G4Run::Merge(aRun);
 
-  const Run* localRun = static_cast<const Run*>(aRun);
-  for (size_t i = 0; i != localRun->EDepPerEvent.size(); i++) {
-    EDepPerEvent.push_back(localRun->EDepPerEvent[i]);
-  }
 }
 
 //
@@ -63,12 +58,14 @@ void Run::RecordEvent(const G4Event* anEvent)
   // Get Primary Energy information:
   G4PrimaryVertex* pVertex = anEvent->GetPrimaryVertex();
   G4ThreeVector primPos = pVertex->GetPosition();
-  G4PrimaryParticle* primary = pVertex->GetPrimary();
+  G4PrimaryParticle* primary = pVertex->GetPrimary(); 
+
   if (primary->GetG4code()->GetParticleName() == "neutron") {
     G4double primEnergy = primary->GetKineticEnergy();
     myAnalysis->FillPrimaryEne(primEnergy/MeV);
     myAnalysis->FillPrimaryPos(primPos.getX()/cm, primPos.getY()/cm);
   }
+  
   //G4cout << "Primary Energy is: " << energy/MeV << G4endl;
   G4HCofThisEvent* hce = anEvent->GetHCofThisEvent();
   G4int collID = sdMan->GetCollectionID("Helium-3/EnergyDep");

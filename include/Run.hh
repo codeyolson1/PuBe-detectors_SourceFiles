@@ -20,10 +20,7 @@ class Run : public G4Run {
       void Merge(const G4Run*);
       void RecordEvent(const G4Event* anEvent);
 
-      G4int GetNumEntries() const { return EDepPerEvent.size(); }
-      G4double GetEDepAtEvent(G4int i) const { return EDepPerEvent[i]; }
     private:
-      std::vector<G4double> EDepPerEvent;
 };
 
 #endif 
