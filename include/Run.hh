@@ -15,12 +15,13 @@
 class Run : public G4Run {
 
     public:
-      Run();
+      Run(G4bool);
       virtual ~Run();
       void Merge(const G4Run*);
       void RecordEvent(const G4Event* anEvent);
 
     private:
+      G4bool isHe3;
 };
 
 #endif 

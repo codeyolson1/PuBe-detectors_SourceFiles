@@ -23,11 +23,12 @@
 #include "G4RunManager.hh"
 #include <iostream>
 #include <fstream>
-RunAction::RunAction() : G4UserRunAction()
+RunAction::RunAction(G4bool He3) : G4UserRunAction()
 {
 
   fMessenger = new RunActionMessenger(this);
   outFileName = "He3Full.root";
+  isHe3 = He3;
 }
 //
 //
@@ -37,13 +38,13 @@ RunAction::~RunAction()
 //
 G4Run* RunAction::GenerateRun()
 {
-  return new Run();
+  return new Run(isHe3);
 }
 //
 //
 void RunAction::BeginOfRunAction(const G4Run*)
 {
-  Analysis* myAnalysis = Analysis::GetAnalysis();
+  Analysis* myAnalysis = Analysis::GetAnalysis(isHe3);
   myAnalysis->Book(outFileName);
   myAnalysis->OpenFile(outFileName);
 } 
@@ -51,7 +52,7 @@ void RunAction::BeginOfRunAction(const G4Run*)
 //
 void RunAction::EndOfRunAction(const G4Run* aRun)
 {
-  Analysis* myAnalysis = Analysis::GetAnalysis();
+  Analysis* myAnalysis = Analysis::GetAnalysis(isHe3);
   if (IsMaster()) {
     G4cout << "End of Global Run" << G4endl;
     myAnalysis->Save();

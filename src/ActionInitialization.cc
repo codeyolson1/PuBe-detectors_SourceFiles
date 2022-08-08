@@ -9,8 +9,9 @@
 #include "RunAction.hh"
 #include "G4Threading.hh"
 
-ActionInitialization::ActionInitialization() : G4VUserActionInitialization()
+ActionInitialization::ActionInitialization(G4bool He3) : G4VUserActionInitialization()
 {
+  isHe3 = He3;
 }
 
 //
@@ -24,7 +25,7 @@ ActionInitialization::~ActionInitialization()
 
 void ActionInitialization::BuildForMaster() const
 {
-  SetUserAction(new RunAction());
+  SetUserAction(new RunAction(isHe3));
 }
 
 //
@@ -33,5 +34,5 @@ void ActionInitialization::BuildForMaster() const
 void ActionInitialization::Build() const
 {
   SetUserAction(new PrimaryGeneratorAction);
-  SetUserAction(new RunAction());
+  SetUserAction(new RunAction(isHe3));
 }
