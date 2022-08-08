@@ -475,7 +475,33 @@ void DetectorConstruction::ConstructSDandField()
     energyDep->SetFilter(nFilter);
     SetSensitiveDetector("He3 Gas", he3Detector);
   } else {
+    G4SDParticleFilter* nFilter = new G4SDParticleFilter("NeutronFilter");
+    nFilter->add("alpha");
+    nFilter->addIon(3,7); // Li7
+    nFilter->addIon(3,6); // Li6
+    nFilter->add("proton");
+    nFilter->addIon(4,10); // Be10
+    nFilter->add("deuteron");
+    nFilter->addIon(4,9); // Be9
+    nFilter->add("triton");
+    nFilter->addIon(4, 8); // Be8
+    nFilter->addIon(5,10); // B-10
+    nFilter->addIon(5,11); // B-11
+    nFilter->add("neutron");
 
+    G4MultiFunctionalDetector* bf3Detector1 = new G4MultiFunctionalDetector("BF31");
+    G4SDManager::GetSDMpointer()->AddNewDetector(bf3Detector1);
+    G4VPrimitiveScorer* energyDep1 = new G4PSEnergyDeposit("EnergyDep1");
+    bf3Detector1->RegisterPrimitive(energyDep1);
+    energyDep1->SetFilter(nFilter);
+    SetSensitiveDetector("BF3 Gas1", bf3Detector1);
+
+    G4MultiFunctionalDetector* bf3Detector2 = new G4MultiFunctionalDetector("BF32");
+    G4SDManager::GetSDMpointer()->AddNewDetector(bf3Detector2);
+    G4VPrimitiveScorer* energyDep2 = new G4PSEnergyDeposit("EnergyDep2");
+    bf3Detector2->RegisterPrimitive(energyDep2);
+    energyDep2->SetFilter(nFilter);
+    SetSensitiveDetector("BF3 Gas2", bf3Detector2);
   }
 
 
