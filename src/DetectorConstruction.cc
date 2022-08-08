@@ -350,7 +350,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     // Tube and moderator dimensions:
     tubeDiam = 2.54*cm; // With shell
     tubeHeight = 10.16*cm;
-    G4double inactive = 7.849*cm;
+    G4double inactive = 3.81*cm;
     mody = tubeDiam + 4.*cm; modx = tubeDiam + 2.*cm; modz = tubeHeight + inactive;
     G4ThreeVector detCenter = G4ThreeVector(shieldCenter.x(), tableCenter.y() - tableY*0.5 + mody*0.5 + 60.96*cm, tableCenter.z() + tableZ*0.5 + modz*0.5);
     // Tube Construction
@@ -395,18 +395,19 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     G4double modx, mody, modz;
 
     // Tube and moderator dimensions:
-    tubeDiam = 4.4*cm;
-    tubeHeight = 10.0*cm;
-    modx = tubeDiam*2. + 4.5*cm; mody = tubeDiam + 2.*cm; modz = tubeHeight;
-
+    tubeDiam = 4.45*cm;
+    tubeHeight = 10.16*cm;
+    G4double inactive = 3.3*cm;
+    mody = tubeDiam*2. + 4.5*cm; modx = tubeDiam + 2.*cm; modz = tubeHeight + inactive;
+    G4ThreeVector detCenter = G4ThreeVector(shieldCenter.x(), tableCenter.y() - tableY*0.5 + mody*0.5 + 60.96*cm, tableCenter.z() + tableZ*0.5 + modz*0.5);
     // Construct BF3 Detectors:
     // SS Shells
-    G4Tubs* bf3ShellSolid1 = new G4Tubs("BF3 Shell1", 0, 0.5*(tubeDiam + 0.2*cm), 0.5*(tubeHeight + 0.2*cm), 0., 360.*deg);
+    G4Tubs* bf3ShellSolid1 = new G4Tubs("BF3 Shell1", 0, 0.5*(tubeDiam), 0.5*(tubeHeight + inactive*0.5), 0., 360.*deg);
     G4LogicalVolume* bf3ShellLogic1 = new G4LogicalVolume(bf3ShellSolid1, fmats["steel"], "BF3 Shell1");
-    //new G4PVPlacement(0, G4ThreeVector(tubeDiam*0.5 + 0.5*cm, 0, 0), bf3ShellLogic1, "BF3 Shell1", logicWorld, false, 0, checkOverlaps);
-    G4Tubs* bf3ShellSolid2 = new G4Tubs("BF3 Shell2", 0, 0.5*(tubeDiam + 0.2*cm), 0.5*(tubeHeight + 0.2*cm), 0., 360.*deg);
+    new G4PVPlacement(0, G4ThreeVector(detCenter.x(), detCenter.y() + tubeDiam*0.5 + 0.25*cm, detCenter.z()), bf3ShellLogic1, "BF3 Shell1", logicWorld, false, 0, checkOverlaps);
+    G4Tubs* bf3ShellSolid2 = new G4Tubs("BF3 Shell2", 0, 0.5*(tubeDiam), 0.5*(tubeHeight + inactive*0.5), 0., 360.*deg);
     G4LogicalVolume* bf3ShellLogic2 = new G4LogicalVolume(bf3ShellSolid2, fmats["steel"], "BF3 Shell2");
-    //new G4PVPlacement(0, G4ThreeVector(-tubeDiam*0.5 - 0.5*cm, 0, 0), bf3ShellLogic2, "BF3 Shell2", logicWorld, false, 0, checkOverlaps);
+    new G4PVPlacement(0, G4ThreeVector(detCenter.x(), detCenter.y() - tubeDiam*0.5 - 0.25*cm, detCenter.z()), bf3ShellLogic2, "BF3 Shell2", logicWorld, false, 0, checkOverlaps);
     // Visual Stuff for shells
     G4VisAttributes* shellAttr = new G4VisAttributes(G4Colour(192., 192., 192.)); // silver
     shellAttr->SetForceWireframe(true);
@@ -415,11 +416,23 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     // BF3 fill gas:
     G4Tubs* bf3GasSolid1 = new G4Tubs("BF3 Gas1", 0, 0.5*(tubeDiam), 0.5*(tubeHeight), 0, 360.*deg);
     G4LogicalVolume* bf3GasLogic1 = new G4LogicalVolume(bf3GasSolid1, fmats["enrBF3"], "BF3 Gas1");
-    new G4PVPlacement(0, G4ThreeVector(tubeDiam*0.5 + 0.25*cm, 0, 0), bf3GasLogic1, "BF3 Gas1", logicWorld, false, 0, checkOverlaps);
+    new G4PVPlacement(0, G4ThreeVector(), bf3GasLogic1, "BF3 Gas1", bf3ShellLogic1, false, 0, checkOverlaps);
     G4Tubs* bf3GasSolid2 = new G4Tubs("BF3 Gas2", 0, 0.5*(tubeDiam), 0.5*(tubeHeight), 0, 360.*deg);
     G4LogicalVolume* bf3GasLogic2 = new G4LogicalVolume(bf3GasSolid2, fmats["enrBF3"], "BF3 Gas2");
-    new G4PVPlacement(0, G4ThreeVector(-(tubeDiam)*0.5 - 0.25*cm, 0, 0), bf3GasLogic2, "BF3 Gas2", logicWorld, false, 0, checkOverlaps);
+    new G4PVPlacement(0, G4ThreeVector(), bf3GasLogic2, "BF3 Gas2", bf3ShellLogic2, false, 0, checkOverlaps);
     G4cout << "BF3 gas volume: " << bf3GasSolid1->GetCubicVolume()/cm3 + bf3GasSolid2->GetCubicVolume()/cm3 << G4endl;
+    G4Tubs* topCap1Solid = new G4Tubs("TopCap1", 0, 0.5*(tubeDiam - 0.178*cm), 0.5*(inactive/2.), 0, 360.*deg);
+    G4LogicalVolume* topCap1Logic = new G4LogicalVolume(topCap1Solid, fmats["air"], "TopCap1");
+    new G4PVPlacement(0, G4ThreeVector(0, 0, tubeHeight*0.5 + 0.25*inactive), topCap1Logic, "TopCap", bf3ShellLogic1, false, 0, checkOverlaps);
+    G4Tubs* bottomCap1Solid = new G4Tubs("bottomCap1", 0, 0.5*(tubeDiam - 0.152*cm), 0.5*(inactive/2.), 0, 360.*deg);
+    G4LogicalVolume* bottomCap1Logic = new G4LogicalVolume(bottomCap1Solid, fmats["air"], "BottomCap1");
+    new G4PVPlacement(0, G4ThreeVector(0, 0, -tubeHeight*0.5 - 0.25*inactive), bottomCap1Logic, "BottomCap1", bf3ShellLogic1, false, 0, checkOverlaps);
+    G4Tubs* topCap2Solid = new G4Tubs("TopCap2", 0, 0.5*(tubeDiam - 0.178*cm), 0.5*(inactive/2.), 0, 360.*deg);
+    G4LogicalVolume* topCap2Logic = new G4LogicalVolume(topCap2Solid, fmats["air"], "TopCap2");
+    new G4PVPlacement(0, G4ThreeVector(0, 0, tubeHeight*0.5 + 0.25*inactive), topCap2Logic, "TopCap", bf3ShellLogic2, false, 0, checkOverlaps);
+    G4Tubs* bottomCap2Solid = new G4Tubs("bottomCap2", 0, 0.5*(tubeDiam - 0.152*cm), 0.5*(inactive/2.), 0, 360.*deg);
+    G4LogicalVolume* bottomCap2Logic = new G4LogicalVolume(bottomCap2Solid, fmats["air"], "BottomCap2");
+    new G4PVPlacement(0, G4ThreeVector(0, 0, -tubeHeight*0.5 - 0.25*inactive), bottomCap2Logic, "BottomCap2", bf3ShellLogic2, false, 0, checkOverlaps);
     // Visual Stuff for gas
     G4VisAttributes* gasAttr = new G4VisAttributes(G4Colour(255., 0., 0.)); // red
     gasAttr->SetForceSolid(true);
@@ -432,7 +445,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     G4VSolid* bf3ModeratorTemp = new G4SubtractionSolid("Mod Temp", moderatorDummy1, moderatorVoidDummy1, 0, G4ThreeVector((tubeDiam)*0.5 + 0.25*cm, 0, 0));
     G4VSolid* bf3ModeratorSolid = new G4SubtractionSolid("BF3 Moderator", bf3ModeratorTemp, moderatorVoidDummy1, 0, G4ThreeVector(-(tubeDiam)*0.5 - 0.25*cm, 0, 0));
     G4LogicalVolume* moderatorBF3Logic = new G4LogicalVolume(bf3ModeratorSolid, fmats["poly"], "ModeratorBF3");
-    new G4PVPlacement(0, G4ThreeVector(0, 0, 0), moderatorBF3Logic, "ModeratorBF3", logicWorld, false, 0, checkOverlaps);
+    new G4PVPlacement(0, detCenter, moderatorBF3Logic, "ModeratorBF3", logicWorld, false, 0, checkOverlaps);
     G4cout << "Moderator volume: " << bf3ModeratorSolid->GetCubicVolume()/cm3 << G4endl;
     // Visual Stuff for moderator
     G4VisAttributes* moderatorAttr = new G4VisAttributes(G4Colour()); // white
@@ -444,19 +457,24 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 void DetectorConstruction::ConstructSDandField()
 {
-  G4SDParticleFilter* nFilter = new G4SDParticleFilter("NeutronFilter");
-  nFilter->add("proton");
-  nFilter->add("triton");
-  nFilter->addIon(2, 3);
-  nFilter->add("deuteron");
-  nFilter->add("alpha");
-  nFilter->add("neutron");
+  if (isHe3) {
+    G4SDParticleFilter* nFilter = new G4SDParticleFilter("NeutronFilter");
+    nFilter->add("proton");
+    nFilter->add("triton");
+    nFilter->addIon(2, 3);
+    nFilter->add("deuteron");
+    nFilter->add("alpha");
+    nFilter->add("neutron");
 
-  G4MultiFunctionalDetector* he3Detector = new G4MultiFunctionalDetector("Helium-3");
-  G4SDManager::GetSDMpointer()->AddNewDetector(he3Detector);
-  G4VPrimitiveScorer* energyDep = new G4PSEnergyDeposit("EnergyDep");
-  he3Detector->RegisterPrimitive(energyDep);
-  energyDep->SetFilter(nFilter);
-  SetSensitiveDetector("He3 Gas", he3Detector);
+    G4MultiFunctionalDetector* he3Detector = new G4MultiFunctionalDetector("Helium-3");
+    G4SDManager::GetSDMpointer()->AddNewDetector(he3Detector);
+    G4VPrimitiveScorer* energyDep = new G4PSEnergyDeposit("EnergyDep");
+    he3Detector->RegisterPrimitive(energyDep);
+    energyDep->SetFilter(nFilter);
+    SetSensitiveDetector("He3 Gas", he3Detector);
+  } else {
+
+  }
+
 
 }
