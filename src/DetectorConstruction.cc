@@ -349,11 +349,12 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
     // Tube and moderator dimensions:
     tubeDiam = 2.54*cm; // With shell
-    tubeHeight = 10.*cm;
-    mody = tubeDiam + 4.*cm; modx = tubeDiam + 2.*cm; modz = tubeHeight + 5.*cm;
+    tubeHeight = 10.16*cm;
+    G4double inactive = 7.849*cm;
+    mody = tubeDiam + 4.*cm; modx = tubeDiam + 2.*cm; modz = tubeHeight + inactive;
     G4ThreeVector detCenter = G4ThreeVector(shieldCenter.x(), tableCenter.y() - tableY*0.5 + mody*0.5 + 60.96*cm, tableCenter.z() + tableZ*0.5 + modz*0.5);
     // Tube Construction
-    G4Tubs* ssShellSolid = new G4Tubs("SS Shell", 0, 0.5*(tubeDiam), 0.5*(tubeHeight + 5.*cm), 0, 360.*deg);
+    G4Tubs* ssShellSolid = new G4Tubs("SS Shell", 0, 0.5*(tubeDiam), 0.5*(tubeHeight + inactive), 0, 360.*deg);
     G4LogicalVolume* ssShellLogic = new G4LogicalVolume(ssShellSolid, fmats["steel"], "SS Shell");
     new G4PVPlacement(0, detCenter, ssShellLogic, "SS Shell", logicWorld, false, 0, checkOverlaps); 
     // Visual Stuff for shells
@@ -361,10 +362,16 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     shellAttr->SetForceWireframe(true);
     ssShellLogic->SetVisAttributes(shellAttr);
     // helium3 fill gas:
-    G4Tubs* he3GasSolid = new G4Tubs("He3 Gas", 0, 0.5*(tubeDiam - 0.2*cm), 0.5*(tubeHeight), 0, 360.*deg);
+    G4Tubs* he3GasSolid = new G4Tubs("He3 Gas", 0, 0.5*(tubeDiam - 0.152*cm), 0.5*(tubeHeight), 0, 360.*deg);
     G4LogicalVolume* he3GasLogic = new G4LogicalVolume(he3GasSolid, fmats["he3"], "He3 Gas");
     new G4PVPlacement(0, G4ThreeVector(), he3GasLogic, "He3 Gas", ssShellLogic, false, 0, checkOverlaps); 
-    G4cout << "Gas volume: " << he3GasSolid->GetCubicVolume()/cm3 << G4endl;
+    // Add air caps for 'inactive' regions of the tube.
+    G4Tubs* topCapSolid = new G4Tubs("TopCap", 0, 0.5*(tubeDiam - 0.152*cm), 0.5*(inactive/2.), 0, 360.*deg);
+    G4LogicalVolume* topCapLogic = new G4LogicalVolume(topCapSolid, fmats["air"], "TopCap");
+    new G4PVPlacement(0, G4ThreeVector(0, 0, tubeHeight*0.5 + 0.25*inactive), topCapLogic, "TopCap", ssShellLogic, false, 0, checkOverlaps);
+    G4Tubs* bottomCapSolid = new G4Tubs("bottomCap", 0, 0.5*(tubeDiam - 0.152*cm), 0.5*(inactive/2.), 0, 360.*deg);
+    G4LogicalVolume* bottomCapLogic = new G4LogicalVolume(bottomCapSolid, fmats["air"], "BottomCap");
+    new G4PVPlacement(0, G4ThreeVector(0, 0, -tubeHeight*0.5 - 0.25*inactive), bottomCapLogic, "BottomCap", ssShellLogic, false, 0, checkOverlaps);
     // Visual Stuff for gas
     G4VisAttributes* gasAttr = new G4VisAttributes(G4Colour(255., 0., 0.)); // red
     gasAttr->SetForceSolid(true);
