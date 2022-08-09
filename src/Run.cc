@@ -83,6 +83,20 @@ void Run::RecordEvent(const G4Event* anEvent)
         myAnalysis->FillEDep(val/MeV, 0);
       }
     }
+    G4int collID_volCurr = sdMan->GetCollectionID("He3Flux/He3VolumeSurfaceCurrent");
+    if (!hce) return;
+    G4THitsMap<G4double>* eventMap_volCurr = 0;
+    eventMap_volCurr = static_cast<G4THitsMap<G4double>*>(hce->GetHC(collID_volCurr));
+    if (eventMap_volCurr && eventMap_volCurr->entries() >= 1) {
+      G4double val = 0.;
+      for (auto itr = eventMap_volCurr->begin(); itr != eventMap_volCurr->end(); itr++) {
+        val += *itr->second;
+      }
+      if (val > 0.) {
+        G4cout << "Volume current: " << val << G4endl;
+        myAnalysis->AddCurrent(val);
+      }
+    }
   } else {
     G4HCofThisEvent* hce = anEvent->GetHCofThisEvent();
     G4int collID1 = sdMan->GetCollectionID("BF31/EnergyDep1");
