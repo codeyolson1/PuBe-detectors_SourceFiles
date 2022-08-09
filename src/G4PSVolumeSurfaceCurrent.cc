@@ -111,7 +111,6 @@ G4bool G4PSVolumeSurfaceCurrent::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   }
 
   G4Box* boxSolid = (G4Box*) (solid);
-  G4cout << "PROCESSING HITS" << G4endl;
   G4int dirFlag = IsSelectedSurface(aStep, boxSolid);
   if(dirFlag > 0)
   {
@@ -124,7 +123,7 @@ G4bool G4PSVolumeSurfaceCurrent::ProcessHits(G4Step* aStep, G4TouchableHistory*)
         current = preStep->GetWeight();  // Current (Particle Weight)
       if(divideByArea)
       {
-        G4double square;
+        G4double square = 1.;
         if (fSurface == 0) {
           square = 4. * boxSolid->GetXHalfLength() * boxSolid->GetYHalfLength();
         } else if (fSurface == 1) {
