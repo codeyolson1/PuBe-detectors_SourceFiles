@@ -30,6 +30,7 @@
 #include "G4SDParticleFilter.hh"
 #include "G4PSCellFlux.hh"
 #include "G4PSEnergyDeposit.hh"
+#include "G4PSVolumeSurfaceCurrent.hh"
 
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
@@ -355,10 +356,13 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     mody = tubeDiam + 4.*cm; modx = tubeDiam + 2.*cm; modz = tubeHeight + inactive;
     G4double detOffset = 60.96*cm;
     G4ThreeVector detCenter = G4ThreeVector(shieldCenter.x(), tableCenter.y() - tableY*0.5 + mody*0.5 + detOffset, tableCenter.z() + tableZ*0.5 + modz*0.5);
+    G4Box* fluxScorerSolid = new G4Box("FluxBox", 0.5*modx, 0.5*mody, 0.5*modz);
+    G4LogicalVolume* fluxScorerLogic = new G4LogicalVolume(fluxScorerSolid, fmats["air"], "FluxBox");
+    new G4PVPlacement(0, detCenter, fluxScorerLogic, "FluxBox", logicWorld, false, 0, checkOverlaps);
     // Tube Construction
     G4Tubs* ssShellSolid = new G4Tubs("SS Shell", 0, 0.5*(tubeDiam), 0.5*(tubeHeight + inactive), 0, 360.*deg);
     G4LogicalVolume* ssShellLogic = new G4LogicalVolume(ssShellSolid, fmats["steel"], "SS Shell");
-    new G4PVPlacement(0, detCenter, ssShellLogic, "SS Shell", logicWorld, false, 0, checkOverlaps); 
+    new G4PVPlacement(0, G4ThreeVector(), ssShellLogic, "SS Shell", fluxScorerLogic, false, 0, checkOverlaps); 
     // Visual Stuff for shells
     G4VisAttributes* shellAttr = new G4VisAttributes(G4Colour(192., 192., 192.)); // silver
     shellAttr->SetForceWireframe(true);
@@ -385,7 +389,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     // Final solid:
     G4VSolid* he3ModeratorSolid = new G4SubtractionSolid("He3 Moderator", moderatorDummy, moderatorVoidDummy, 0, G4ThreeVector());
     G4LogicalVolume* he3ModeratorLogic = new G4LogicalVolume(he3ModeratorSolid, fmats["poly"], "He3 Moderator");
-    new G4PVPlacement(0, detCenter, he3ModeratorLogic, "He3 Moderator", logicWorld, false, 0, checkOverlaps);
+    new G4PVPlacement(0, G4ThreeVector(), he3ModeratorLogic, "He3 Moderator", fluxScorerLogic, false, 0, checkOverlaps);
     G4cout << "Moderator volume: " << he3ModeratorSolid->GetCubicVolume()/cm3 << G4endl;
     // Visual Stuff for moderator
     G4VisAttributes* moderatorAttr = new G4VisAttributes(G4Colour()); // white
@@ -401,7 +405,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     tubeHeight = 10.16*cm;
     G4double inactive = 3.3*cm;
     mody = tubeDiam*2. + 4.5*cm; modx = tubeDiam + 2.*cm; modz = tubeHeight + inactive;
-    G4double detOffset = 60.96*cm;
+    G4double detOffset = 83.82*cm;
     G4ThreeVector detCenter = G4ThreeVector(shieldCenter.x(), tableCenter.y() - tableY*0.5 + mody*0.5 + detOffset, tableCenter.z() + tableZ*0.5 + modz*0.5);
     // Construct BF3 Detectors:
     // SS Shells
@@ -462,20 +466,31 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 void DetectorConstruction::ConstructSDandField()
 {
   if (isHe3) {
-    G4SDParticleFilter* nFilter = new G4SDParticleFilter("NeutronFilter");
-    nFilter->add("proton");
-    nFilter->add("triton");
-    nFilter->addIon(2, 3);
-    nFilter->add("deuteron");
-    nFilter->add("alpha");
-    nFilter->add("neutron");
+    G4SDParticleFilter* ionFilter = new G4SDParticleFilter("IonFilter");
+    ionFilter->add("proton");
+    ionFilter->add("triton");
+    ionFilter->addIon(2, 3);
+    ionFilter->add("deuteron");
+    ionFilter->add("alpha");
+    ionFilter->add("neutron");
+
+    G4SDParticleFilter* neutronFilter = new G4SDParticleFilter("NeutronFilter");
+    neutronFilter->add("neutron");
 
     G4MultiFunctionalDetector* he3Detector = new G4MultiFunctionalDetector("Helium-3");
     G4SDManager::GetSDMpointer()->AddNewDetector(he3Detector);
     G4VPrimitiveScorer* energyDep = new G4PSEnergyDeposit("EnergyDep");
     he3Detector->RegisterPrimitive(energyDep);
-    energyDep->SetFilter(nFilter);
+    energyDep->SetFilter(ionFilter);
     SetSensitiveDetector("He3 Gas", he3Detector);
+
+    G4MultiFunctionalDetector* fluxScorer = new G4MultiFunctionalDetector("He3Flux");
+    G4SDManager::GetSDMpointer()->AddNewDetector(fluxScorer);
+    G4VPrimitiveScorer* volCurrent = new G4PSVolumeSurfaceCurrent("He3VolumeSurfaceCurrent", 1);
+    fluxScorer->RegisterPrimitive(volCurrent);
+    volCurrent->SetFilter(neutronFilter);
+    SetSensitiveDetector("FluxBox", fluxScorer);
+    
   } else {
     G4SDParticleFilter* nFilter = new G4SDParticleFilter("NeutronFilter");
     nFilter->add("alpha");
