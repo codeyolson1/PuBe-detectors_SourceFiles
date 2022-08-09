@@ -355,8 +355,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     G4double inactive = 3.81*cm;
     mody = tubeDiam + 4.*cm; modx = tubeDiam + 2.*cm; modz = tubeHeight + inactive;
     G4double detOffset = 60.96*cm;
-    G4ThreeVector detCenter = G4ThreeVector(shieldCenter.x(), tableCenter.y() - tableY*0.5 + mody*0.5 + detOffset, tableCenter.z() + tableZ*0.5 + modz*0.5);
-    G4Box* fluxScorerSolid = new G4Box("FluxBox", 0.5*modx, 0.5*mody, 0.5*modz);
+    G4ThreeVector detCenter = G4ThreeVector(shieldCenter.x() + 1.*um, tableCenter.y() - tableY*0.5 + mody*0.5 + detOffset + 1.*um, tableCenter.z() + tableZ*0.5 + modz*0.5 + 1.*um);
+    G4Box* fluxScorerSolid = new G4Box("FluxBox", 0.5*modx + 1.*um, 0.5*mody + 1.*um, 0.5*modz + 1.*um);
     G4LogicalVolume* fluxScorerLogic = new G4LogicalVolume(fluxScorerSolid, fmats["air"], "FluxBox");
     new G4PVPlacement(0, detCenter, fluxScorerLogic, "FluxBox", logicWorld, false, 0, checkOverlaps);
     // Tube Construction
