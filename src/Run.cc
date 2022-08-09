@@ -129,6 +129,20 @@ void Run::RecordEvent(const G4Event* anEvent)
         myAnalysis->FillEDep((val2)/MeV, 3);
       }
     }
+    G4int collID_volCurr = sdMan->GetCollectionID("BF3Flux/BF3VolumeSurfaceCurrent");
+    if (!hce) return;
+    G4THitsMap<G4double>* eventMap_volCurr = 0;
+    eventMap_volCurr = static_cast<G4THitsMap<G4double>*>(hce->GetHC(collID_volCurr));
+    if (eventMap_volCurr && eventMap_volCurr->entries() >= 1) {
+      G4double val = 0.;
+      for (auto itr = eventMap_volCurr->begin(); itr != eventMap_volCurr->end(); itr++) {
+        val += *itr->second;
+      }
+      if (val > 0.) {
+      
+        myAnalysis->AddCurrent(val);
+      }
+    }
   }
 
   G4Run::RecordEvent(anEvent);

@@ -67,7 +67,7 @@ G4PSVolumeSurfaceCurrent::G4PSVolumeSurfaceCurrent(G4String name, G4int directio
   , fDirection(direction)
   , EvtMap(0)
   , weighted(true)
-  , divideByArea(true)
+  , divideByArea(false)
 {
   DefineUnitAndCategory();
   SetUnit("percm2");
@@ -82,7 +82,7 @@ G4PSVolumeSurfaceCurrent::G4PSVolumeSurfaceCurrent(G4String name, G4int directio
   , fDirection(direction)
   , EvtMap(0)
   , weighted(true)
-  , divideByArea(true)
+  , divideByArea(false)
 {
   DefineUnitAndCategory();
   SetUnit(unit);
