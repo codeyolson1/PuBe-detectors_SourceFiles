@@ -105,7 +105,8 @@ void Analysis::Save()
 {
   G4GenericAnalysisManager* man = G4GenericAnalysisManager::Instance();
   man->Write();
-
+  G4AccumulableManager* accumulableManager = G4AccumulableManager::Instance();
+  accumulableManager->Merge();
   return;
 }
 
@@ -114,9 +115,8 @@ void Analysis::Save()
 
 void Analysis::Close(G4bool reset)
 {
-  G4AccumulableManager* accumulableManager = G4AccumulableManager::Instance();
-  accumulableManager->Merge();
-  G4double volCurrent = volumeCurrent.GetValue();
+
+  G4double volCurrent = volumeCurrent.GetValue()/(1/cm2);
   G4cout << "Total volume current for box: " << volCurrent << " cm^-2." << G4endl;
   G4GenericAnalysisManager* man = G4GenericAnalysisManager::Instance();
   man->CloseFile(reset);
@@ -196,4 +196,5 @@ void Analysis::CheckConvergence()
 void Analysis::AddCurrent(G4double current)
 {
   volumeCurrent += current;
+
 }
