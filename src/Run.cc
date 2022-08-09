@@ -93,7 +93,7 @@ void Run::RecordEvent(const G4Event* anEvent)
         val += *itr->second;
       }
       if (val > 0.) {
-        G4cout << "Volume current: " << val << G4endl;
+      
         myAnalysis->AddCurrent(val);
       }
     }
