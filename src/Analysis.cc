@@ -14,6 +14,7 @@
 #include "G4RootAnalysisManager.hh"
 #include "G4ConvergenceTester.hh"
 #include "G4GenericAnalysisManager.hh"
+#include "G4AccumulableManager.hh"
 
 G4ThreadLocal Analysis* theAnalysis = 0;
 
@@ -79,6 +80,10 @@ void Analysis::Book(G4String runName)
     eDepHistTot = man->CreateH1("BF3EnergyDepTot", "BF3EnergyDepTot", 512, 0., 5.);
   }
 
+    G4AccumulableManager* accumulableManager = G4AccumulableManager::Instance();
+    accumulableManager->RegisterAccumulable(volumeCurrent);
+    accumulableManager->Reset();
+
   return; 
 }
 
@@ -109,6 +114,10 @@ void Analysis::Save()
 
 void Analysis::Close(G4bool reset)
 {
+  G4AccumulableManager* accumulableManager = G4AccumulableManager::Instance();
+  accumulableManager->Merge();
+  G4double volCurrent = volumeCurrent.GetValue();
+  G4cout << "Total volume current for box: " << volCurrent << " cm^-2." << G4endl;
   G4GenericAnalysisManager* man = G4GenericAnalysisManager::Instance();
   man->CloseFile(reset);
 
@@ -179,4 +188,12 @@ void Analysis::CheckConvergence()
   convOutput.close();
 
   return;
+}
+
+//
+//
+
+void Analysis::AddCurrent(G4double current)
+{
+  volumeCurrent += current;
 }

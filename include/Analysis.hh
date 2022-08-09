@@ -7,6 +7,7 @@
 #ifndef Analysis_h
 #define Analysis_h 1
 
+#include "G4Accumulable.hh"
 #include <tools/histo/h1d>
 #include <tools/histo/h2d>
 
@@ -33,6 +34,7 @@ class Analysis {
     void FillPrimaryEne(G4double);
     void FillPrimaryPos(G4double, G4double);
     void CheckConvergence();
+    void AddCurrent(G4double current);
 
   private:
     Analysis();
@@ -46,6 +48,7 @@ class Analysis {
     G4int primPosHist;
     G4String convergenceName;
     G4bool isHe3;
+    G4Accumulable<G4double> volumeCurrent = 0.;
 };
 
 #endif
