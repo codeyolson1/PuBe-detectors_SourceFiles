@@ -31,7 +31,7 @@ int main(int argc, char** argv)
 
   G4VModularPhysicsList* physicsList = new QGSP_BIC_AllHP();
   physicsList->RegisterPhysics( new G4ThermalNeutrons());
-  G4bool isHe3 = true;
+  G4bool isHe3 = false;
   runManager->SetUserInitialization(new DetectorConstruction(isHe3));
   //G4VModularPhysicsList* physicsList = new QGSP_BIC_HP();
   physicsList->SetDefaultCutValue(700*CLHEP::um);

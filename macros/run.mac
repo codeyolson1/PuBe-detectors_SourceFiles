@@ -1,6 +1,6 @@
 /control/execute PuBeSpec.mac
 
 # Commands:
-/vis/disable
+#/vis/disable
 /run/beamOn 100000
 /vis/enable
