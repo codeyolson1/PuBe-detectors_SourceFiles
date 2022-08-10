@@ -187,14 +187,14 @@ G4int G4PSVolumeSurfaceCurrent::IsSelectedSurface(G4Step* aStep, G4Box* boxSolid
     G4ThreeVector stppos2 = aStep->GetPostStepPoint()->GetPosition();
     G4ThreeVector localpos2 =
       theTouchable->GetHistory()->GetTopTransform().TransformPoint(stppos2);
-    if((std::fabs(localpos2.z() + boxSolid->GetZHalfLength()) < kCarTolerance) || (std::fabs(localpos2.z() + boxSolid->GetZHalfLength()) < kCarTolerance))
+    if((std::fabs(localpos2.z() + boxSolid->GetZHalfLength()) < kCarTolerance) || (std::fabs(localpos2.z() - boxSolid->GetZHalfLength()) < kCarTolerance))
     {
       fSurface = 0;
       return fCurrent_Out;
-    } else if ((std::fabs(localpos2.y() + boxSolid->GetYHalfLength()) < kCarTolerance) || (std::fabs(localpos2.y() + boxSolid->GetYHalfLength()) < kCarTolerance)) {
+    } else if ((std::fabs(localpos2.y() + boxSolid->GetYHalfLength()) < kCarTolerance) || (std::fabs(localpos2.y() - boxSolid->GetYHalfLength()) < kCarTolerance)) {
       fSurface = 1;
       return fCurrent_Out;
-    } else if ((std::fabs(localpos2.x() + boxSolid->GetXHalfLength()) < kCarTolerance) || (std::fabs(localpos2.x() + boxSolid->GetXHalfLength()) < kCarTolerance)) {
+    } else if ((std::fabs(localpos2.x() + boxSolid->GetXHalfLength()) < kCarTolerance) || (std::fabs(localpos2.x() - boxSolid->GetXHalfLength()) < kCarTolerance)) {
       fSurface = 2;
       return fCurrent_Out;
     }
