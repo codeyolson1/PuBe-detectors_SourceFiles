@@ -35,6 +35,7 @@ class Analysis {
     void FillPrimaryPos(G4double, G4double);
     void CheckConvergence();
     void AddCurrent(G4double current);
+    void AddPuBeCurrent(G4double current);
 
   private:
     Analysis();
@@ -49,6 +50,7 @@ class Analysis {
     G4String convergenceName;
     G4bool isHe3;
     G4Accumulable<G4double> volumeCurrent = 0.;
+    G4Accumulable<G4double> pubeCurrent = 0.;
 };
 
 #endif

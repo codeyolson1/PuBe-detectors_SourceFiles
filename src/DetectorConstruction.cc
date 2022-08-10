@@ -31,7 +31,7 @@
 #include "G4PSCellFlux.hh"
 #include "G4PSEnergyDeposit.hh"
 #include "G4PSVolumeSurfaceCurrent.hh"
-
+#include "G4PSCylinderSurfaceCurrent.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
 #include "G4VisAttributes.hh"
@@ -306,7 +306,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   // BeamPort
   G4Tubs* beamDummy = new G4Tubs("BeamDummy", 0., 2.407*cm, 19.05*0.5*cm, 0., 360.*deg);
   G4Cons* shieldDummy = new G4Cons("ShieldDummy", 0, shieldBottomD*0.5, 0, shieldTopD*0.5, shieldH*0.5, 0, 360.*deg);
-  G4Tubs* sourceSlotDummy = new G4Tubs("SourceDummy", 0, 0.5*2.53492*cm, 0.5*40.*cm, 0, 360.*deg);
+  G4Tubs* sourceSlotDummy = new G4Tubs("SourceDummy", 0, 0.5*2.53492*cm + 2.*um, 0.5*40.*cm, 0, 360.*deg);
   G4VSolid* shieldDummySource = new G4SubtractionSolid("ShieldDummySource", shieldDummy, sourceSlotDummy, 0, G4ThreeVector(0, 0, -shieldH*0.5 + sourceChamberH*0.5 + (shieldH - sourceChamberH) + 0.1*mm));
   G4RotationMatrix* rotateX = new G4RotationMatrix();
   rotateX->rotateX(90.*deg);  
@@ -330,12 +330,15 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4double PuBeD = 2.06756*cm;
   G4double PuBeH = 3.814*cm;
   // Construction:
+  G4Tubs* pubeCurrentSolid = new G4Tubs("PuBeCurrentCyl", 0., 0.5*stainlessD + 1.*um, 0.5*stainlessH + 1.*um, 0, 360.*deg);
+  G4LogicalVolume* pubeCurrentLogic = new G4LogicalVolume(pubeCurrentSolid, fmats["air"], "PuBeCurrentCyl");
+  new G4PVPlacement(0, G4ThreeVector(shieldCenter.x(), shieldCenter.y(), shieldCenter.z() - shieldH*0.5 + stainlessH*0.5 + (shieldH - sourceChamberH) + 0.2*mm), pubeCurrentLogic, "PuBeCurrentCyl", logicWorld, false, 0, checkOverlaps);
   G4Tubs* stainlessSolid = new G4Tubs("StainlessShell", 0, 0.5*stainlessD, 0.5*stainlessH, 0, 360.*deg);
   G4LogicalVolume* stainlessLogic = new G4LogicalVolume(stainlessSolid, fmats["steel"], "StainlessShell");
   G4VisAttributes* sourceAttr =  new G4VisAttributes(G4Colour(1.,0.,0.));
   sourceAttr->SetForceSolid(true);
   stainlessLogic->SetVisAttributes(sourceAttr);
-  new G4PVPlacement(0,  G4ThreeVector(shieldCenter.x(), shieldCenter.y(), shieldCenter.z() - shieldH*0.5 + stainlessH*0.5 + (shieldH - sourceChamberH) + 0.1*mm), stainlessLogic, "StainlessShell", logicWorld, false, 0, checkOverlaps);
+  new G4PVPlacement(0,  G4ThreeVector(), stainlessLogic, "StainlessShell", pubeCurrentLogic, false, 0, checkOverlaps);
   G4Tubs* tantalumSolid = new G4Tubs("TantalumShell", 0, 0.5*tantalumD, 0.5*tantalumH, 0, 360.*deg);
   G4LogicalVolume* tantalumLogic = new G4LogicalVolume(tantalumSolid, fmats["Tantalum"], "TantalumShell");
   new G4PVPlacement(0, G4ThreeVector(), tantalumLogic, "TantalumShell", stainlessLogic, false, 0, checkOverlaps);
@@ -468,6 +471,16 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 void DetectorConstruction::ConstructSDandField()
 {
+  G4SDParticleFilter* neutronFilter = new G4SDParticleFilter("NeutronFilter");
+  neutronFilter->add("neutron");
+  
+  G4MultiFunctionalDetector* PuBeCurrent = new G4MultiFunctionalDetector("PuBeCurrentScorer");
+  G4SDManager::GetSDMpointer()->AddNewDetector(PuBeCurrent);
+  G4VPrimitiveScorer* cylinderCurrent = new G4PSCylinderSurfaceCurrent("CylinderCurrent", 2);
+  PuBeCurrent->RegisterPrimitive(cylinderCurrent);
+  cylinderCurrent->SetFilter(neutronFilter);
+  SetSensitiveDetector("PuBeCurrentCyl", PuBeCurrent);
+
   if (isHe3) {
     G4SDParticleFilter* ionFilter = new G4SDParticleFilter("IonFilter");
     ionFilter->add("proton");
@@ -477,8 +490,7 @@ void DetectorConstruction::ConstructSDandField()
     ionFilter->add("alpha");
     ionFilter->add("neutron");
 
-    G4SDParticleFilter* neutronFilter = new G4SDParticleFilter("NeutronFilter");
-    neutronFilter->add("neutron");
+
 
     G4MultiFunctionalDetector* he3Detector = new G4MultiFunctionalDetector("Helium-3");
     G4SDManager::GetSDMpointer()->AddNewDetector(he3Detector);
@@ -508,9 +520,6 @@ void DetectorConstruction::ConstructSDandField()
     ionFilter->addIon(5,10); // B-10
     ionFilter->addIon(5,11); // B-11
     ionFilter->add("neutron");
-
-    G4SDParticleFilter* neutronFilter = new G4SDParticleFilter("NeutronFilter");
-    neutronFilter->add("neutron");
 
     G4MultiFunctionalDetector* bf3Detector1 = new G4MultiFunctionalDetector("BF31");
     G4SDManager::GetSDMpointer()->AddNewDetector(bf3Detector1);

@@ -82,6 +82,7 @@ void Analysis::Book(G4String runName)
 
     G4AccumulableManager* accumulableManager = G4AccumulableManager::Instance();
     accumulableManager->RegisterAccumulable(volumeCurrent);
+    accumulableManager->RegisterAccumulable(pubeCurrent);
     accumulableManager->Reset();
 
   return; 
@@ -116,8 +117,10 @@ void Analysis::Save()
 void Analysis::Close(G4bool reset)
 {
 
-  G4double volCurrent = volumeCurrent.GetValue()/(1/cm2);
-  G4cout << "Total volume current for box: " << volCurrent << " cm^-2." << G4endl;
+  G4double volCurrent = volumeCurrent.GetValue();
+  G4cout << "Total volume current for box: " << volCurrent << " neutrons" << G4endl;
+  G4double pubecurrent = pubeCurrent.GetValue();
+  G4cout << "Total Leakage current for PuBe source: " << pubecurrent << " neutrons." << G4endl;
   G4GenericAnalysisManager* man = G4GenericAnalysisManager::Instance();
   man->CloseFile(reset);
 
@@ -197,4 +200,12 @@ void Analysis::AddCurrent(G4double current)
 {
   volumeCurrent += current;
 
+}
+
+//
+//
+
+void Analysis::AddPuBeCurrent(G4double current)
+{
+  pubeCurrent += current;
 }
