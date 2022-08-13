@@ -324,13 +324,13 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4VSolid* beamIntersection = new G4IntersectionSolid("BeamIntersection", shieldDummySource, beamIntersectionDummy, rotateX, G4ThreeVector(0, 9.525*cm, -6.7675*cm));
   G4VSolid* shieldSolid = new G4SubtractionSolid("ShieldSolid", shieldDummySource, beamDummy, rotateX, G4ThreeVector(0, 9.525*cm, -6.7675*cm));
   G4LogicalVolume* shieldLogic = new G4LogicalVolume(shieldSolid, fmats["BPoly5"], "Shield");
-  new G4PVPlacement(0, shieldCenter, shieldLogic, "Shield", logicWorld, false, 0, checkOverlaps);
+  //new G4PVPlacement(0, shieldCenter, shieldLogic, "Shield", logicWorld, false, 0, checkOverlaps);
   G4LogicalVolume* beamLogic = new G4LogicalVolume(beamIntersection, fmats["lead"], "BeamSolid");  
-  new G4PVPlacement(0, shieldCenter, beamLogic, "BeamSolid", logicWorld, false, 0, checkOverlaps);
+  //new G4PVPlacement(0, shieldCenter, beamLogic, "BeamSolid", logicWorld, false, 0, checkOverlaps);
   G4Tubs* beamPlugDummy = new G4Tubs("BeamPlugDummy", 0, 1.907*cm, 19.05*0.5*cm, 0., 360.*deg);
   G4VSolid* beamPlugIntersection = new G4IntersectionSolid("BeamPlugIntersection", shieldDummySource, beamPlugDummy, rotateX, G4ThreeVector(0, 9.525*cm, -6.7675*cm));
     G4LogicalVolume* beamPlugLogic = new G4LogicalVolume(beamPlugIntersection, fmats["BPoly5"], "BeamPlugIntersection");  
-  new G4PVPlacement(0, shieldCenter, beamPlugLogic, "BeamPlugIntersection", logicWorld, false, 0, checkOverlaps);
+  //new G4PVPlacement(0, shieldCenter, beamPlugLogic, "BeamPlugIntersection", logicWorld, false, 0, checkOverlaps);
   // Source:
   // Params:
   G4double stainlessD = 2.53492*cm;
@@ -339,10 +339,12 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4double tantalumH = 4.572*cm;
   G4double PuBeD = 2.06756*cm;
   G4double PuBeH = 3.814*cm;
+  G4ThreeVector PuBeCenterShield = G4ThreeVector(shieldCenter.x(), shieldCenter.y(), shieldCenter.z() - shieldH*0.5 + stainlessH*0.5 + (shieldH - sourceChamberH) + 0.2*mm);
+  G4ThreeVector PuBeCenterBare = G4ThreeVector(tableCenter.x(), tableCenter.y() - tableY*0.5 - stainlessD*0.5 + 36.83*cm, tableCenter.z() + tableZ*0.5 + stainlessH*0.5 + 1.*um);
   // Construction:
   G4Tubs* pubeCurrentSolid = new G4Tubs("PuBeCurrentCyl", 0., 0.5*stainlessD + 1.*um, 0.5*stainlessH + 1.*um, 0, 360.*deg);
   G4LogicalVolume* pubeCurrentLogic = new G4LogicalVolume(pubeCurrentSolid, fmats["air"], "PuBeCurrentCyl");
-  new G4PVPlacement(0, G4ThreeVector(shieldCenter.x(), shieldCenter.y(), shieldCenter.z() - shieldH*0.5 + stainlessH*0.5 + (shieldH - sourceChamberH) + 0.2*mm), pubeCurrentLogic, "PuBeCurrentCyl", logicWorld, false, 0, checkOverlaps);
+  new G4PVPlacement(0, PuBeCenterBare, pubeCurrentLogic, "PuBeCurrentCyl", logicWorld, false, 0, checkOverlaps);
   G4Tubs* stainlessSolid = new G4Tubs("StainlessShell", 0, 0.5*stainlessD, 0.5*stainlessH, 0, 360.*deg);
   G4LogicalVolume* stainlessLogic = new G4LogicalVolume(stainlessSolid, fmats["steel"], "StainlessShell");
   G4VisAttributes* sourceAttr =  new G4VisAttributes(G4Colour(1.,0.,0.));
@@ -367,7 +369,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     G4double shellThick = 0.076*cm;
     G4double inactive = 3.81*cm;
     mody = tubeDiam + 4.*cm; modx = tubeDiam + 2.*cm; modz = tubeHeight + inactive;
-    G4double detOffset = 60.96*cm;
+    G4double detOffset = 91.44*cm;
     G4ThreeVector detCenter = G4ThreeVector(shieldCenter.x() + 1.*um, tableCenter.y() - tableY*0.5 + mody*0.5 + detOffset + 1.*um, tableCenter.z() + tableZ*0.5 + modz*0.5 + 1.*um);
     G4Box* fluxScorerSolid = new G4Box("FluxBox", 0.5*modx + 1.*um, 0.5*mody + 1.*um, 0.5*modz + 1.*um);
     G4LogicalVolume* fluxScorerLogic = new G4LogicalVolume(fluxScorerSolid, fmats["air"], "FluxBox");
@@ -418,7 +420,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     tubeHeight = 10.16*cm;
     G4double inactive = 3.3*cm;
     mody = tubeDiam*2. + 4.5*cm; modx = tubeDiam + 2.*cm; modz = tubeHeight + inactive;
-    G4double detOffset = 83.82*cm;
+    G4double detOffset = 91.44*cm;
     G4ThreeVector detCenter = G4ThreeVector(shieldCenter.x() + 1.*um, tableCenter.y() - tableY*0.5 + mody*0.5 + detOffset + 1.*um, tableCenter.z() + tableZ*0.5 + modz*0.5 + 1.*um);
     G4Box* fluxScorerSolid = new G4Box("FluxBox", 0.5*modx + 1.*um, 0.5*mody + 1.*um, 0.5*modz + 1.*um);
     G4LogicalVolume* fluxScorerLogic = new G4LogicalVolume(fluxScorerSolid, fmats["air"], "FluxBox");

@@ -4,7 +4,10 @@
 /gps/pos/confine PuBeSource
 /gps/pos/radius 1.25 cm
 /gps/pos/halfz 22.86 cm
-/gps/pos/centre 87.63 -191.77 -24.13 cm
+# Bare source
+/gps/pos/centre 87.63 -172.71746 -44.2595 cm
+# Shielded source
+#/gps/pos/centre 87.63 -191.77 -24.13 cm
 /gps/ang/type iso
 /gps/ene/type User
 /gps/hist/type energy
