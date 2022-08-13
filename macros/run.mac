@@ -1,4 +1,4 @@
-/control/execute PuBeSpec.mac
+/control/execute PuBeSpec_manufactured.mac
 
 # Commands:
 #/vis/disable

@@ -1,0 +1,49 @@
+/gps/particle neutron
+/gps/pos/type Volume 
+/gps/pos/shape Cylinder
+/gps/pos/confine PuBeSource
+/gps/pos/radius 1.25 cm
+/gps/pos/halfz 22.86 cm
+/gps/pos/centre 87.63 -191.77 -24.13 cm
+/gps/ang/type iso
+/gps/ene/type User
+/gps/hist/type energy
+/gps/hist/point 1.E-11 0.
+# Remove energies with prob below 1e-8
+/gps/hist/point 	1.58E-03	2.72E-08
+/gps/hist/point 	3.35E-03	9.29E-08
+/gps/hist/point 	7.10E-03	4.36E-07
+/gps/hist/point 	1.50E-02	1.79E-06
+/gps/hist/point 	2.19E-02	2.34E-06
+/gps/hist/point 	2.42E-02	9.31E-07
+/gps/hist/point 	2.61E-02	8.13E-07
+/gps/hist/point 	3.18E-02	2.74E-06
+/gps/hist/point 	4.09E-02	5.19E-06
+/gps/hist/point 	6.74E-02	2.05E-05
+/gps/hist/point 	1.11E-01	4.77E-05
+/gps/hist/point 	1.83E-01	1.03E-04
+/gps/hist/point 	2.97E-01	3.74E-04
+/gps/hist/point 	3.69E-01	1.08E-03
+/gps/hist/point 	4.98E-01	4.52E-03
+/gps/hist/point 	6.08E-01	5.83E-03
+/gps/hist/point 	7.43E-01	9.03E-03
+/gps/hist/point 	8.21E-01	5.81E-03
+/gps/hist/point 	1.00E+00	1.33E-02
+/gps/hist/point 	1.35E+00	2.54E-02
+/gps/hist/point 	1.65E+00	1.66E-02
+/gps/hist/point 	1.92E+00	1.53E-02
+/gps/hist/point 	2.23E+00	2.50E-02
+/gps/hist/point 	2.35E+00	1.09E-02
+/gps/hist/point 	2.37E+00	1.86E-03
+/gps/hist/point 	2.47E+00	9.58E-03
+/gps/hist/point 	2.73E+00	3.03E-02
+/gps/hist/point 	3.01E+00	5.08E-02
+/gps/hist/point 	3.68E+00	1.44E-01
+/gps/hist/point 	4.97E+00	2.20E-01
+/gps/hist/point 	6.07E+00	1.02E-01
+/gps/hist/point 	7.41E+00	1.26E-01
+/gps/hist/point 	8.61E+00	1.05E-01
+/gps/hist/point 	1.00E+01	7.10E-02
+/gps/hist/point 	1.22E+01	6.04E-03
+/gps/hist/point 	1.42E+01	6.24E-08
+/gps/hist/point 	1.73E+01	1.00E-08

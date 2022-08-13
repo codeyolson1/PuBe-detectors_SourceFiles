@@ -173,6 +173,16 @@ void DetectorConstruction::ConstructMaterials()
   PuBe->AddMaterial(Berillyum, 33.60332295*perCent);
   fmats["PuBe"] = PuBe;
   
+  G4Element* Plutonium_Man = new G4Element("PlutoniumMan", "PuMan", 4);
+  // Decayed percentages:
+  Plutonium_Man->AddIsotope(Pu239, 90.96*perCent);
+  Plutonium_Man->AddIsotope(Pu240, 8.22*perCent);
+  Plutonium_Man->AddIsotope(Pu241, 0.79*perCent);
+  Plutonium_Man->AddIsotope(Pu242, 0.03*perCent);
+  G4Material* PuBe_Man = new G4Material("Pu-BeMixture_Manufactured", 3.760187302*g/cm3, 2); 
+  PuBe_Man->AddElement(Plutonium_Man, 66.39667705*perCent);
+  PuBe_Man->AddMaterial(Berillyum, 33.60332295*perCent);
+  fmats["PuBe_manufacture"] = PuBe_Man;
   // From MCNP Material Compendium: Wood (Southern Pine)
   /*
   G4Material* wood = new G4Material("Wood", 0.64*g/cm3, 8);
