@@ -1,0 +1,62 @@
+/gps/particle neutron
+/gps/pos/type Volume 
+/gps/pos/shape Cylinder
+/gps/pos/confine PuBeSource
+/gps/pos/radius 1.25 cm
+/gps/pos/halfz 22.86 cm
+# Bare source
+/gps/pos/centre 130.81 -122.807 -44.2594 cm
+# Shielded source
+#/gps/pos/centre 87.63 -191.77 -24.13 cm
+/gps/ang/type iso
+/gps/ene/type User
+/gps/hist/type energy
+/gps/hist/point 1.E-11 0.
+# Remove energies with prob below 1e-9
+#/gps/hist/point 	1.00E-07	7.32E-15
+#/gps/hist/point 	4.14E-07	5.44E-14
+#/gps/hist/point 	8.76E-07	1.28E-13
+#/gps/hist/point 	1.86E-06	3.98E-13
+#/gps/hist/point 	5.04E-06	2.03E-12
+#/gps/hist/point 	1.07E-05	5.49E-12
+#/gps/hist/point 	3.73E-05	4.47E-11
+#/gps/hist/point 	1.01E-04	1.82E-10
+#/gps/hist/point 	2.14E-04	4.90E-10
+#/gps/hist/point 	4.54E-04	1.52E-09
+/gps/hist/point 	1.58E-03	1.34E-08
+/gps/hist/point 	3.35E-03	5.90E-08
+/gps/hist/point 	7.10E-03	3.18E-07
+/gps/hist/point 	1.50E-02	1.40E-06
+/gps/hist/point 	2.19E-02	1.89E-06
+/gps/hist/point 	2.42E-02	7.56E-07
+/gps/hist/point 	2.61E-02	6.69E-07
+/gps/hist/point 	3.18E-02	2.25E-06
+/gps/hist/point 	4.09E-02	4.30E-06
+/gps/hist/point 	6.74E-02	1.73E-05
+/gps/hist/point 	1.11E-01	4.07E-05
+/gps/hist/point 	1.83E-01	8.86E-05
+/gps/hist/point 	2.97E-01	3.36E-04
+/gps/hist/point 	3.69E-01	1.01E-03
+/gps/hist/point 	4.98E-01	4.25E-03
+/gps/hist/point 	6.08E-01	5.49E-03
+/gps/hist/point 	7.43E-01	8.52E-03
+/gps/hist/point 	8.21E-01	5.52E-03
+/gps/hist/point 	1.00E+00	1.30E-02
+/gps/hist/point 	1.35E+00	2.49E-02
+/gps/hist/point 	1.65E+00	1.64E-02
+/gps/hist/point 	1.92E+00	1.51E-02
+/gps/hist/point 	2.23E+00	2.42E-02
+/gps/hist/point 	2.35E+00	1.05E-02
+/gps/hist/point 	2.37E+00	1.80E-03
+/gps/hist/point 	2.47E+00	9.22E-03
+/gps/hist/point 	2.73E+00	2.88E-02
+/gps/hist/point 	3.01E+00	4.78E-02
+/gps/hist/point 	3.68E+00	1.41E-01
+/gps/hist/point 	4.97E+00	2.22E-01
+/gps/hist/point 	6.07E+00	1.09E-01
+/gps/hist/point 	7.41E+00	1.26E-01
+/gps/hist/point 	8.61E+00	1.05E-01
+/gps/hist/point 	1.00E+01	7.34E-02
+/gps/hist/point 	1.22E+01	6.87E-03
+/gps/hist/point 	1.42E+01	2.99E-08
+#/gps/hist/point 	1.73E+01	4.79E-09

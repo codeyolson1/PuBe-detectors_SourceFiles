@@ -215,8 +215,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   // World:
   // Params:
   G4double worldX, worldY, worldZ;
-  worldX = 381.*cm;
-  worldY = 482.6*cm; 
+  worldX = 465.*cm;
+  worldY = 516.*cm; 
   worldZ = 317.5*cm;
   // Construction:
   G4Box* solidWorld = new G4Box("World", 0.5*worldX, 0.5*worldY,0.5*worldZ);
@@ -226,10 +226,13 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   //
   // Floor
   // Params:
-  G4double floorX = 378.46*cm;
-  G4double floorY = 477.52*cm;
+  G4double floorX = 464.82*cm;
+  G4double floorY = 515.62*cm;
   G4double floorZ = 30.48*cm;
-  G4ThreeVector floorCenter = G4ThreeVector(0, 0, -worldZ*0.5 + floorZ*0.5 + 5.08*cm);
+  G4double xOffset, yOffset, zOffset;
+  xOffset = (worldX - floorX)*0.5; yOffset = (worldY - floorY)*0.5;
+  zOffset = (worldZ - 307.34*cm)*0.5;
+  G4ThreeVector floorCenter = G4ThreeVector(0, 0, -worldZ*0.5 + floorZ*0.5 + zOffset);
   // Construction
   G4Box* floorSolid = new G4Box("Floor", 0.5*floorX, 0.5*floorY, 0.5*floorZ);
   G4LogicalVolume* floorLogic = new G4LogicalVolume(floorSolid, fmats["concrete"], "Floor");
@@ -242,9 +245,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   // South Wall
   // Params:
   G4double sWallX = 30.48*cm;
-  G4double sWallY = 477.52*cm;
+  G4double sWallY = floorY;
   G4double sWallZ = 276.86*cm;
-  G4ThreeVector sWallCenter = G4ThreeVector(worldX*0.5 - sWallX*0.5 - 1.27*cm, worldY*0.5 - sWallY*0.5 - 2.54*cm, worldZ*0.5 - sWallZ*0.5 - 5.08*cm);
+  G4ThreeVector sWallCenter = G4ThreeVector(worldX*0.5 - sWallX*0.5 - xOffset, worldY*0.5 - sWallY*0.5 - yOffset, worldZ*0.5 - sWallZ*0.5 - zOffset);
   // Construction:
   G4Box* sWallSolid = new G4Box("SouthWall", 0.5*sWallX, 0.5*sWallY, 0.5*sWallZ);
   G4LogicalVolume* sWallLogic = new G4LogicalVolume(sWallSolid, fmats["concrete"], "SouthWall");
@@ -257,7 +260,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4double pillarX = 134.62*cm;
   G4double pillarY = 106.68*cm;
   G4double pillarZ = 246.38*cm;
-  G4ThreeVector pillarCenter = G4ThreeVector(worldX*0.5 - pillarX*0.5 - sWallX - 1.27*cm, worldY*0.5 - pillarY*0.5 - 2.54*cm, -worldZ*0.5 + pillarZ*0.5 + floorZ + 5.08*cm);
+  G4ThreeVector pillarCenter = G4ThreeVector(worldX*0.5 - pillarX*0.5 - sWallX - xOffset, worldY*0.5 - pillarY*0.5 - yOffset, -worldZ*0.5 + pillarZ*0.5 + floorZ + zOffset);
   // Construction:
   G4Box* pillarSolid = new G4Box("Pillar", 0.5*pillarX, 0.5*pillarY, 0.5*pillarZ);
   G4LogicalVolume* pillarLogic = new G4LogicalVolume(pillarSolid, fmats["concrete"], "Pillar");
@@ -271,7 +274,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   lowPillarX = pillarX;
   lowPillarY = 96.52*cm;
   lowPillarZ = 132.08*cm;
-  G4ThreeVector lowPillarCenter = G4ThreeVector(worldX*0.5 - lowPillarX*0.5 - sWallX - 1.27*cm, worldY*0.5 - lowPillarY*0.5 - pillarY - 2.54*cm, -worldZ*0.5 + lowPillarZ*0.5 + floorZ + 5.08*cm);
+  G4ThreeVector lowPillarCenter = G4ThreeVector(worldX*0.5 - lowPillarX*0.5 - sWallX - xOffset, worldY*0.5 - lowPillarY*0.5 - pillarY - yOffset, -worldZ*0.5 + lowPillarZ*0.5 + floorZ + zOffset);
   // Construction
   G4Box* lowPillarSolid = new G4Box("LowPillar", 0.5*lowPillarX, 0.5*lowPillarY, 0.5*lowPillarZ);
   G4LogicalVolume* lowPillarLogic = new G4LogicalVolume(lowPillarSolid, fmats["concrete"], "LowPillar");
@@ -281,10 +284,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   //
   // Mesanine
   // Params:
-  G4double mesX = 213.36*cm;
+  G4double mesX = floorX - pillarX - sWallX;
   G4double mesY = 162.56*cm;
   G4double mesZ = 198.12*cm;
-  G4ThreeVector mesCenter = G4ThreeVector(-worldX*0.5 + mesX*0.5 + 1.27*cm, worldY*0.5 - mesY*0.5 - 2.54*cm, -worldZ*0.5 + mesZ*0.5 + floorZ + 5.08*cm);
+  G4ThreeVector mesCenter = G4ThreeVector(-worldX*0.5 + mesX*0.5 + xOffset, worldY*0.5 - mesY*0.5 - yOffset, -worldZ*0.5 + mesZ*0.5 + floorZ + zOffset);
   // Construction:
   G4Box* mesanineSolid = new G4Box("Mesanine", 0.5*mesX, 0.5*mesY, 0.5*mesZ);
   G4LogicalVolume* mesanineLogic = new G4LogicalVolume(mesanineSolid, fmats["concrete"], "Mesanine");
@@ -298,20 +301,55 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   tableX = 121.92*cm;
   tableY = 182.88*cm;
   tableZ = 3.175*cm;
-  G4ThreeVector tableCenter = G4ThreeVector(worldX*0.5 - sWallX - 71.12*cm - 1.27*cm, -worldY*0.5 + tableY*0.5 + 30.48*cm + 2.54*cm, -worldZ*0.5 - tableZ*0.5 + floorZ + 76.2*cm + 5.08*cm);
+  G4ThreeVector tableCenter = G4ThreeVector(worldX*0.5 - sWallX - 71.12*cm - xOffset, worldY*0.5 - tableY*0.5 - pillarY - lowPillarY - 30.48*cm + yOffset, -worldZ*0.5 - tableZ*0.5 + floorZ + 76.2*cm + zOffset);
   // Construction
   G4Box* tableTopSolid = new G4Box("TableTop", 0.5*tableX, 0.5*tableY, 0.5*tableZ);
   G4LogicalVolume* tableTopLogic = new G4LogicalVolume(tableTopSolid, fmats["steel"], "TableTop");
   new G4PVPlacement(0, tableCenter, tableTopLogic, "TableTop", logicWorld, false, 0, checkOverlaps);
 
-  
+  // AmBe Bunker
+  // Params
+  G4double outerBunkerX, outerBunkerY, outerBunkerZ;
+  G4double innerBunkerX, innerBunkerY, innerBunkerZ;
+  outerBunkerX = 160.02*cm; outerBunkerY = 129.54*cm; outerBunkerZ = 152.4*cm;
+  innerBunkerX = 119.38*cm; innerBunkerY = 68.58*cm; innerBunkerZ = 142.38*cm;
+  G4ThreeVector outerBunkerCenter = G4ThreeVector(-worldX*0.5  + outerBunkerX*0.5 + xOffset, worldY*0.5 - outerBunkerY*0.5 - mesY - yOffset, -worldZ*0.5 + outerBunkerZ*0.5 + floorZ + zOffset);
+  G4ThreeVector innerBunkerCenter = G4ThreeVector(0, outerBunkerY*0.5 - innerBunkerY*0.5, -outerBunkerZ*0.5 + innerBunkerZ*0.5);
+  // Construction
+  G4Box* outerBunkerSolid = new G4Box("OuterBunker", 0.5*outerBunkerX, 0.5*outerBunkerY, 0.5*outerBunkerZ);
+  G4LogicalVolume* outerBunkerLogic = new G4LogicalVolume(outerBunkerSolid, fmats["concrete"], "OuterBunker");
+  new G4PVPlacement(0, outerBunkerCenter, outerBunkerLogic, "OuterBunker", logicWorld, false, 0, checkOverlaps);
+  G4Box* innerBunkerSolid = new G4Box("InnerBunker", 0.5*innerBunkerX, 0.5*innerBunkerY, 0.5*innerBunkerZ);
+  G4LogicalVolume* innerBunkerLogic = new G4LogicalVolume(innerBunkerSolid, fmats["air"], "InnerBunker");
+  new G4PVPlacement(0, innerBunkerCenter, innerBunkerLogic, "InnerBunker", outerBunkerLogic, false, 0, checkOverlaps);
+
+
+  // AGN
+  // Params
+  G4double agnDiam, agnHeight, agnThick;
+  agnDiam = 182.88*cm; agnHeight = 175.26*cm; agnThick = 60.96*cm;
+  G4ThreeVector agnCenter = G4ThreeVector(worldX*0.5 - agnDiam*0.5 - sWallX - pillarX - 139.7*cm - 60.96*cm - xOffset, worldY*0.5 - agnDiam*0.5 - mesY - outerBunkerY - 40.64*cm - yOffset, -worldZ*0.5 + agnHeight*0.5 + floorZ + 91.44*cm + zOffset);
+  // Construction
+  G4Tubs* agnSolid = new G4Tubs("AGN", agnDiam*0.5 - agnThick, agnDiam*0.5, agnHeight*0.5, -90*deg, 180.*deg);
+  G4LogicalVolume* agnLogic = new G4LogicalVolume(agnSolid, fmats["steel"], "AGN");
+  new G4PVPlacement(0, agnCenter, agnLogic, "AGN", logicWorld, false, 0, checkOverlaps);
+
+  // Fuel Cask
+  //Params
+  G4double caskDiam, caskHeight;
+  caskDiam = 40.64*cm; caskHeight = 101.6*cm;
+  G4ThreeVector caskCenter = G4ThreeVector(worldX*0.5 - caskDiam*0.5 - sWallX - xOffset, worldY*0.5 - caskDiam*0.5 - (pillarY + lowPillarY) - 30.48*cm - tableY - 45.72*cm - yOffset, -worldZ*0.5 + caskHeight*0.5 + floorZ + zOffset);
+  // Construction
+  G4Tubs* caskSolid = new G4Tubs("Cask", 0, caskDiam*0.5, caskHeight*0.5, 0, 360.*deg);
+  G4LogicalVolume* caskLogic = new G4LogicalVolume(caskSolid, fmats["concrete"], "Cask");
+  new G4PVPlacement(0, caskCenter, caskLogic, "Cask", logicWorld, false, 0, checkOverlaps);
+
   // Source and Shielding Bucket
   G4double shieldTopD = 38.1*cm;
   G4double shieldBottomD = 33.02*cm;
   G4double shieldH = 45.72*cm;
   G4double sourceChamberH = 40.*cm;
   G4ThreeVector shieldCenter = G4ThreeVector(tableCenter.x(), tableCenter.y() - tableY*0.5 + shieldBottomD*0.5, tableCenter.z() + tableZ*0.5 + shieldH*0.5);
-  G4cout << "Shield Center: " << shieldCenter.getX()/cm << ", " << shieldCenter.getY()/cm << ", " << shieldCenter.getZ()/cm << G4endl;
   // Construction:
   // BeamPort
   G4Tubs* beamDummy = new G4Tubs("BeamDummy", 0., 2.407*cm, 19.05*0.5*cm, 0., 360.*deg);
@@ -341,6 +379,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4double PuBeH = 3.814*cm;
   G4ThreeVector PuBeCenterShield = G4ThreeVector(shieldCenter.x(), shieldCenter.y(), shieldCenter.z() - shieldH*0.5 + stainlessH*0.5 + (shieldH - sourceChamberH) + 0.2*mm);
   G4ThreeVector PuBeCenterBare = G4ThreeVector(tableCenter.x(), tableCenter.y() - tableY*0.5 - stainlessD*0.5 + 36.83*cm, tableCenter.z() + tableZ*0.5 + stainlessH*0.5 + 1.*um);
+  G4cout << "PuBe source Coords:" << PuBeCenterBare.getX()/cm << ", " << PuBeCenterBare.getY()/cm << ", " << PuBeCenterBare.getZ()/cm << G4endl;
   // Construction:
   G4Tubs* pubeCurrentSolid = new G4Tubs("PuBeCurrentCyl", 0., 0.5*stainlessD + 1.*um, 0.5*stainlessH + 1.*um, 0, 360.*deg);
   G4LogicalVolume* pubeCurrentLogic = new G4LogicalVolume(pubeCurrentSolid, fmats["air"], "PuBeCurrentCyl");

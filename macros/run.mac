@@ -1,4 +1,5 @@
-/control/execute PuBeSpec.mac
+/control/execute PuBeSpec_updated.mac
+/RunAction/FileName BF3Response.root
 
 # Commands:
 #/vis/disable

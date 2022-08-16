@@ -73,11 +73,11 @@ void Analysis::Book(G4String runName)
   primPosHist = man->CreateH2("PrimaryPosition", "PrimaryPosition", 100, 84., 90, 100, -195., -188.);
 
   if (isHe3) {
-    eDepHist = man->CreateH1("He3EnergyDep", "He3EnergyDep", 512, 0., 5.);
+    eDepHist = man->CreateH1("He3EnergyDep", "He3EnergyDep", 512, 0., 10.);
   } else {
-    eDepHist1 = man->CreateH1("BF3EnergyDep1", "BF3EnergyDep1", 512, 0., 5.);
-    eDepHist2 = man->CreateH1("BF3EnergyDep2", "BF3EnergyDep2", 512, 0., 5.);
-    eDepHistTot = man->CreateH1("BF3EnergyDepTot", "BF3EnergyDepTot", 512, 0., 5.);
+    eDepHist1 = man->CreateH1("BF3EnergyDep1", "BF3EnergyDep1", 512, 0., 12.);
+    eDepHist2 = man->CreateH1("BF3EnergyDep2", "BF3EnergyDep2", 512, 0., 12.);
+    eDepHistTot = man->CreateH1("BF3EnergyDepTot", "BF3EnergyDepTot", 512, 0., 12.);
   }
 
     G4AccumulableManager* accumulableManager = G4AccumulableManager::Instance();
