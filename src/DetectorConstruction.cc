@@ -95,8 +95,8 @@ void DetectorConstruction::ConstructMaterials()
   fmats["BPoly5"] = BPoly5;
   // BF3 Gas// Material info from :
   // https://gitlab.cern.ch/clemenci/Geant4-srcs/-/blob/92686251452762ac5947193b5f02ba43b77f546b/examples/extended/hadronic/FissionFragment/src/FFDetectorConstruction.cc
-  G4double const B10Enrichment = 0.96;
-  G4double const B11Enrichment = 0.04;
+  G4double const B10Enrichment = 0.99;
+  G4double const B11Enrichment = 0.01;
   G4Isotope* const iB10
       = new G4Isotope("iB10",                         // name
                       5,                              // ZZZ
