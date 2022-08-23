@@ -7,6 +7,7 @@
 #include "ActionInitialization.hh"
 #include "PrimaryGeneratorAction.hh"
 #include "RunAction.hh"
+#include "SteppingAction.hh"
 #include "G4Threading.hh"
 
 ActionInitialization::ActionInitialization(G4bool He3) : G4VUserActionInitialization()
@@ -35,4 +36,5 @@ void ActionInitialization::Build() const
 {
   SetUserAction(new PrimaryGeneratorAction);
   SetUserAction(new RunAction(isHe3));
+  SetUserAction(new SteppingAction());
 }
