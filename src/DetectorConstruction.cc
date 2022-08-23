@@ -10,6 +10,7 @@
 #include "G4NistManager.hh"
 #include "G4SDManager.hh"
 #include "G4CrossSectionDataStore.hh"
+#include "G4ProductionCuts.hh"
 #include "G4Box.hh"
 #include "G4Tubs.hh"
 #include "G4Cons.hh"
@@ -48,6 +49,7 @@ DetectorConstruction::DetectorConstruction(G4bool he3)
   isHe3 = he3;
   fmats = {};
   ConstructMaterials();
+  scatteringRegion = new G4Region("ScatteringRegion");
 
 }
 
@@ -237,9 +239,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4Box* floorSolid = new G4Box("Floor", 0.5*floorX, 0.5*floorY, 0.5*floorZ);
   G4LogicalVolume* floorLogic = new G4LogicalVolume(floorSolid, fmats["concrete"], "Floor");
   new G4PVPlacement(0, floorCenter, floorLogic, "Floor", logicWorld, false, 0, checkOverlaps);
-  G4VisAttributes* concAttr =  new G4VisAttributes(G4Colour::Grey());
-  concAttr->SetForceSolid(true);
-  floorLogic->SetVisAttributes(concAttr);
+  G4VisAttributes* roomAttr =  new G4VisAttributes(G4Colour::Gray());
+  roomAttr->SetForceSolid(true);
+  floorLogic->SetVisAttributes(roomAttr);
+  scatteringRegion->AddRootLogicalVolume(floorLogic);
 
   //
   // South Wall
@@ -252,7 +255,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4Box* sWallSolid = new G4Box("SouthWall", 0.5*sWallX, 0.5*sWallY, 0.5*sWallZ);
   G4LogicalVolume* sWallLogic = new G4LogicalVolume(sWallSolid, fmats["concrete"], "SouthWall");
   new G4PVPlacement(0, sWallCenter, sWallLogic, "SouthWall", logicWorld, false, 0, checkOverlaps);
-  sWallLogic->SetVisAttributes(concAttr);
+  sWallLogic->SetVisAttributes(roomAttr);
+  scatteringRegion->AddRootLogicalVolume(sWallLogic);
 
   //
   // Pillar
@@ -265,7 +269,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4Box* pillarSolid = new G4Box("Pillar", 0.5*pillarX, 0.5*pillarY, 0.5*pillarZ);
   G4LogicalVolume* pillarLogic = new G4LogicalVolume(pillarSolid, fmats["concrete"], "Pillar");
   new G4PVPlacement(0, pillarCenter, pillarLogic, "Pillar", logicWorld, false, 0, checkOverlaps);
+  G4VisAttributes* concAttr =  new G4VisAttributes(G4Colour(211, 211, 211));
+  concAttr->SetForceSolid(true);
   pillarLogic->SetVisAttributes(concAttr);
+  scatteringRegion->AddRootLogicalVolume(pillarLogic);
 
   //
   // Lower Pillar
@@ -280,6 +287,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4LogicalVolume* lowPillarLogic = new G4LogicalVolume(lowPillarSolid, fmats["concrete"], "LowPillar");
   new G4PVPlacement(0, lowPillarCenter, lowPillarLogic, "LowPillar", logicWorld, false, 0, checkOverlaps);
   lowPillarLogic->SetVisAttributes(concAttr);
+  scatteringRegion->AddRootLogicalVolume(lowPillarLogic);
   
   //
   // Mesanine
@@ -292,7 +300,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4Box* mesanineSolid = new G4Box("Mesanine", 0.5*mesX, 0.5*mesY, 0.5*mesZ);
   G4LogicalVolume* mesanineLogic = new G4LogicalVolume(mesanineSolid, fmats["concrete"], "Mesanine");
   new G4PVPlacement(0, mesCenter, mesanineLogic, "Mesanine", logicWorld, false, 0, checkOverlaps);
-  mesanineLogic->SetVisAttributes(concAttr);
+  mesanineLogic->SetVisAttributes(roomAttr);
+  scatteringRegion->AddRootLogicalVolume(mesanineLogic);
 
   //
   // Table
@@ -306,6 +315,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4Box* tableTopSolid = new G4Box("TableTop", 0.5*tableX, 0.5*tableY, 0.5*tableZ);
   G4LogicalVolume* tableTopLogic = new G4LogicalVolume(tableTopSolid, fmats["steel"], "TableTop");
   new G4PVPlacement(0, tableCenter, tableTopLogic, "TableTop", logicWorld, false, 0, checkOverlaps);
+  G4VisAttributes* tableAttr =  new G4VisAttributes(G4Colour::Brown());
+  tableAttr->SetForceSolid(true);
+  tableTopLogic->SetVisAttributes(tableAttr);
+  scatteringRegion->AddRootLogicalVolume(tableTopLogic);
 
   // AmBe Bunker
   // Params
@@ -322,7 +335,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4Box* innerBunkerSolid = new G4Box("InnerBunker", 0.5*innerBunkerX, 0.5*innerBunkerY, 0.5*innerBunkerZ);
   G4LogicalVolume* innerBunkerLogic = new G4LogicalVolume(innerBunkerSolid, fmats["air"], "InnerBunker");
   new G4PVPlacement(0, innerBunkerCenter, innerBunkerLogic, "InnerBunker", outerBunkerLogic, false, 0, checkOverlaps);
-
+  outerBunkerLogic->SetVisAttributes(concAttr);
+  scatteringRegion->AddRootLogicalVolume(outerBunkerLogic);
 
   // AGN
   // Params
@@ -333,6 +347,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4Tubs* agnSolid = new G4Tubs("AGN", agnDiam*0.5 - agnThick, agnDiam*0.5, agnHeight*0.5, -90*deg, 180.*deg);
   G4LogicalVolume* agnLogic = new G4LogicalVolume(agnSolid, fmats["steel"], "AGN");
   new G4PVPlacement(0, agnCenter, agnLogic, "AGN", logicWorld, false, 0, checkOverlaps);
+  G4VisAttributes* agnAttr =  new G4VisAttributes(G4Colour::Magenta());
+  agnAttr->SetForceSolid(true);
+  agnLogic->SetVisAttributes(agnAttr);
+  scatteringRegion->AddRootLogicalVolume(agnLogic);
 
   // Fuel Cask
   //Params
@@ -343,6 +361,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4Tubs* caskSolid = new G4Tubs("Cask", 0, caskDiam*0.5, caskHeight*0.5, 0, 360.*deg);
   G4LogicalVolume* caskLogic = new G4LogicalVolume(caskSolid, fmats["concrete"], "Cask");
   new G4PVPlacement(0, caskCenter, caskLogic, "Cask", logicWorld, false, 0, checkOverlaps);
+  caskLogic->SetVisAttributes(concAttr);
+  scatteringRegion->AddRootLogicalVolume(caskLogic);
 
   // Source and Shielding Bucket
   G4double shieldTopD = 38.1*cm;
@@ -363,6 +383,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4VSolid* shieldSolid = new G4SubtractionSolid("ShieldSolid", shieldDummySource, beamDummy, rotateX, G4ThreeVector(0, 9.525*cm, -6.7675*cm));
   G4LogicalVolume* shieldLogic = new G4LogicalVolume(shieldSolid, fmats["BPoly5"], "Shield");
   //new G4PVPlacement(0, shieldCenter, shieldLogic, "Shield", logicWorld, false, 0, checkOverlaps);
+  scatteringRegion->AddRootLogicalVolume(shieldLogic);
   G4LogicalVolume* beamLogic = new G4LogicalVolume(beamIntersection, fmats["lead"], "BeamSolid");  
   //new G4PVPlacement(0, shieldCenter, beamLogic, "BeamSolid", logicWorld, false, 0, checkOverlaps);
   G4Tubs* beamPlugDummy = new G4Tubs("BeamPlugDummy", 0, 1.907*cm, 19.05*0.5*cm, 0., 360.*deg);
@@ -377,8 +398,11 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4double tantalumH = 4.572*cm;
   G4double PuBeD = 2.06756*cm;
   G4double PuBeH = 3.814*cm;
+  G4double capHeight = shieldH - stainlessH;
+  G4double capDiam = stainlessD;
   G4ThreeVector PuBeCenterShield = G4ThreeVector(shieldCenter.x(), shieldCenter.y(), shieldCenter.z() - shieldH*0.5 + stainlessH*0.5 + (shieldH - sourceChamberH) + 0.2*mm);
   G4ThreeVector PuBeCenterBare = G4ThreeVector(tableCenter.x(), tableCenter.y() - tableY*0.5 - stainlessD*0.5 + 36.83*cm, tableCenter.z() + tableZ*0.5 + stainlessH*0.5 + 1.*um);
+  G4ThreeVector sourceCapCenter = G4ThreeVector(PuBeCenterBare.x(), PuBeCenterBare.y(), PuBeCenterBare.z() + stainlessH*0.5 + capHeight*0.5 + 1.*um);
   G4cout << "PuBe source Coords:" << PuBeCenterBare.getX()/cm << ", " << PuBeCenterBare.getY()/cm << ", " << PuBeCenterBare.getZ()/cm << G4endl;
   // Construction:
   G4Tubs* pubeCurrentSolid = new G4Tubs("PuBeCurrentCyl", 0., 0.5*stainlessD + 1.*um, 0.5*stainlessH + 1.*um, 0, 360.*deg);
@@ -389,6 +413,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4VisAttributes* sourceAttr =  new G4VisAttributes(G4Colour(1.,0.,0.));
   sourceAttr->SetForceSolid(true);
   stainlessLogic->SetVisAttributes(sourceAttr);
+  pubeCurrentLogic->SetVisAttributes(sourceAttr);
   new G4PVPlacement(0,  G4ThreeVector(), stainlessLogic, "StainlessShell", pubeCurrentLogic, false, 0, checkOverlaps);
   G4Tubs* tantalumSolid = new G4Tubs("TantalumShell", 0, 0.5*tantalumD, 0.5*tantalumH, 0, 360.*deg);
   G4LogicalVolume* tantalumLogic = new G4LogicalVolume(tantalumSolid, fmats["Tantalum"], "TantalumShell");
@@ -396,6 +421,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4Tubs* PuBeSolid = new G4Tubs("PuBeSource", 0, 0.5*PuBeD, 0.5*PuBeH, 0, 360.*deg);
   G4LogicalVolume* PuBeLogic = new G4LogicalVolume(PuBeSolid, fmats["PuBe"], "PuBeSource");
   new G4PVPlacement(0, G4ThreeVector(), PuBeLogic, "PuBeSource", tantalumLogic, false, 0, checkOverlaps);
+  G4Tubs* puBeCapSolid = new G4Tubs("PuBeCap", 0, 0.5*capDiam, 0.5*capHeight, 0, 360.*deg);
+  G4LogicalVolume* puBeCapLogic = new G4LogicalVolume(puBeCapSolid, fmats["poly"], "PuBeCap");
+  new G4PVPlacement(0, sourceCapCenter, puBeCapLogic, "PuBeCap", logicWorld, false, 0, checkOverlaps);
   // Detector and Placement:
   if (isHe3) {
     G4double tubeDiam;

@@ -10,7 +10,7 @@
 #include "G4VUserDetectorConstruction.hh"
 #include "G4NistManager.hh"
 #include "globals.hh"
-
+#include "G4Region.hh"
 class G4VPhysicalVolume;
 class G4LogicalVolume;
 
@@ -27,10 +27,14 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
   private:
     std::map<std::string, G4Material*> fmats;
+    G4bool isHe3;
+    G4Region* scatteringRegion;
 
   public:
     void ConstructMaterials();
-    G4bool isHe3;
+    inline G4Region* GetScatteringRegion() const { return scatteringRegion; }
+
+    
 
 };
 
