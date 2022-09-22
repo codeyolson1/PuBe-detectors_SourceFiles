@@ -31,7 +31,21 @@ int main(int argc, char** argv)
 
   G4VModularPhysicsList* physicsList = new QGSP_BIC_AllHP();
   physicsList->RegisterPhysics( new G4ThermalNeutrons());
-  G4bool isHe3 = true;
+
+  // Get Detector info from argument:
+  G4bool isHe3;
+  G4String detName = argv[2];
+  if (detName == "he3") {
+    G4cout << "He3 argument passed." << G4endl;
+    isHe3 = true;
+  } else if (detName == "bf3") {
+    G4cout <<"BF3 argument passed." << G4endl;
+    isHe3 = false;
+  } else {
+    G4cout << "Invalid Detector Argument Passed. Defaulting to He3." << G4endl;
+    isHe3 = true;
+  }
+  
   runManager->SetUserInitialization(new DetectorConstruction(isHe3));
   //G4VModularPhysicsList* physicsList = new QGSP_BIC_HP();
   physicsList->SetDefaultCutValue(700*CLHEP::um);
