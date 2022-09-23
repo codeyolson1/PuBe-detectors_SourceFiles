@@ -3,5 +3,5 @@
 
 # Commands:
 #/vis/disable
-/run/beamOn 1000000
+/run/beamOn 500000000
 /vis/enable
