@@ -1,5 +1,5 @@
 #!/bin/tcsh
-#SBATCH --time=0:30:00
+#SBATCH --time=12:00:00
 #SBATCH -J runG4bay-He3
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=64
@@ -10,14 +10,16 @@
 #SBATCH --mail-type=FAIL,BEGIN,END
 #SBATCH --mail-user=codey.olson@utah.edu
 
-# Setup the environment
-source custom1.csh
-
 # Set up my directories
 setenv SCRATCHDIR /scratch/general/lustre/$USER/$SLURM_JOB_ID
 setenv CURRENTDIR $HOME/Geant4/gitRepos/PuBe-detectors_SourceFiles
 mkdir -p $SCRATCHDIR
-mkdir -p $CURRENTDIR/outputHe3bay-$SLURM_JOB_ID
+mkdir -p $CURRENTDIR/outputsHe3/outputHe3bay-$SLURM_JOB_ID
+
+# Setup the environment
+cd
+source custom1.csh
+cd $CURRENTDIR
 
 # Copy my data into the scratch directory:
 cp -r $CURRENTDIR/build $SCRATCHDIR
@@ -28,12 +30,12 @@ cd $SCRATCHDIR/build
 ./pu-be runHe3.mac he3
 
 # Copy over the output of my file to my home directory
-cp He3Response.root $CURRENTDIR/outputHe3bay-$SLURM_JOB_ID
-cp He3Response.root-conv.txt $CURRENTDIR/outputHe3bay-$SLURM_JOB_ID
+cp He3Response.root $CURRENTDIR/outputsHe3/outputHe3bay-$SLURM_JOB_ID
+cp He3Response.root-conv.txt $CURRENTDIR/outputsHe3/outputHe3bay-$SLURM_JOB_ID
 
 # Copy the stdouput to the output folder
-cd
-cp geant4He3bay_$SLURM_JOB_ID.out $CURRENTDIR/outputHe3bay-$SLURM_JOB_ID
+cd $CURRENTDIR
+cp geant4He3bay_$SLURM_JOB_ID.out $CURRENTDIR/outputsHe3/outputHe3bay-$SLURM_JOB_ID
 rm geant4He3bay_$SLURM_JOB_ID.out
 
 # Delete my data from SCRATCHDIR

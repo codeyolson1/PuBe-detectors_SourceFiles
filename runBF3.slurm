@@ -1,5 +1,5 @@
 #!/bin/tcsh
-#SBATCH --time=0:30:00
+#SBATCH --time=12:00:00
 #SBATCH -J runG4bay-BF3
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=64
@@ -10,14 +10,16 @@
 #SBATCH --mail-type=FAIL,BEGIN,END
 #SBATCH --mail-user=codey.olson@utah.edu
 
-# Setup the environment
-source custom1.csh
-
 # Set up my directories
 setenv SCRATCHDIR /scratch/general/lustre/$USER/$SLURM_JOB_ID
 setenv CURRENTDIR $HOME/Geant4/gitRepos/PuBe-detectors_SourceFiles
 mkdir -p $SCRATCHDIR
-mkdir -p $CURRENTDIR/outputBF3bay-$SLURM_JOB_ID
+mkdir -p $CURRENTDIR/outputsBF3/outputBF3bay-$SLURM_JOB_ID
+
+# Setup the environment
+cd
+source custom1.csh
+cd $CURRENTDIR
 
 # Copy my data into the scratch directory:
 cp -r $CURRENTDIR/build $SCRATCHDIR
@@ -28,10 +30,10 @@ cd $SCRATCHDIR/build
 ./pu-be runBF3.mac bf3
 
 # Copy over the output of my file to my home directory
-cp BF3Response.root $CURRENTDIR/outputBF3bay-$SLURM_JOB_ID
-cp BF3Response.root-conv.txt $CURRENTDIR/outputBF3bay-$SLURM_JOB_ID
+cp BF3Response.root $CURRENTDIR/outputsBF3/outputBF3bay-$SLURM_JOB_ID
+cp BF3Response.root-conv.txt $CURRENTDIR/outputsBF3/outputBF3bay-$SLURM_JOB_ID
 
 # Copy the stdouput to the output folder
-cd
-cp geant4BF3bay_$SLURM_JOB_ID.out $CURRENTDIR/outputBF3bay-$SLURM_JOB_ID
+cd $CURRENTDIR
+cp geant4BF3bay_$SLURM_JOB_ID.out $CURRENTDIR/outputsBF3/outputBF3bay-$SLURM_JOB_ID
 rm geant4BF3bay_$SLURM_JOB_ID.out
