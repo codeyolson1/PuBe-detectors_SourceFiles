@@ -50,6 +50,7 @@ SteppingAction::~SteppingAction()
 
 void SteppingAction::UserSteppingAction(const G4Step* step)
 {
+  // Check to see if the scattering region has been defined yet. If not, generate it from DetectorConstruction.
   if (!fScatteringRegion) {
     const DetectorConstruction* detConstruction
       = static_cast<const DetectorConstruction*>
@@ -57,12 +58,12 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
     fScatteringRegion = detConstruction->GetScatteringRegion();
   }
 
-  // get region of the current step
+  // Get the region for the current step.
   const G4Region* region
     = step->GetPreStepPoint()->GetTouchableHandle()
       ->GetVolume()->GetLogicalVolume()->GetRegion();
 
-  // check if we are in scattering region
+  // Check to see if the current region is part of the scattering region, i.e. not a scoring volume.
   if (region != fScatteringRegion) return;
 
   // Kill any particles that aren't neutrons:

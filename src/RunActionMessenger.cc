@@ -14,9 +14,10 @@
 RunActionMessenger::RunActionMessenger(RunAction* myRunAction)
 : G4UImessenger(), fRunAction(myRunAction)
 {
+  // Create new director for RunAction.
   fRADir = new G4UIdirectory("/RunAction/");
   fRADir->SetGuidance("Control parameters set within RunAction.");
-
+  // New command to set file name.
   fFileName = new G4UIcmdWithAString("/RunAction/FileName", this);
   fFileName->SetGuidance("Set the file name for output.");
   fFileName->SetParameterName("choice", false);
