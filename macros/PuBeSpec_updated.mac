@@ -5,9 +5,9 @@
 /gps/pos/radius 1.25 cm
 /gps/pos/halfz 22.86 cm
 # Bare source
-/gps/pos/centre 130.81 -122.807 -44.2594 cm
+#/gps/pos/centre 130.81 -122.807 -44.2594 cm
 # Shielded source
-#/gps/pos/centre 87.63 -191.77 -24.13 cm
+/gps/pos/centre 130.81 -141.86 -38.5195 cm
 /gps/ang/type iso
 /gps/ene/type User
 /gps/hist/type energy
