@@ -1,7 +1,7 @@
 /control/execute PuBeSpec_updated.mac
 /RunAction/FileName He3Response.root
-
+# Detector at 2 feet.
 # Commands:
 /vis/disable
-/run/beamOn 10000
+/run/beamOn 750000000
 /vis/enable
