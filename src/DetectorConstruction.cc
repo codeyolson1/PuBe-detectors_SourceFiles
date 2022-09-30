@@ -57,7 +57,8 @@ DetectorConstruction::DetectorConstruction(G4bool he3)
 //
 
 DetectorConstruction::~DetectorConstruction()
-{}
+{
+}
 
 //
 //

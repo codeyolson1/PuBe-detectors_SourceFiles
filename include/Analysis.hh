@@ -8,6 +8,7 @@
 #define Analysis_h 1
 
 #include "G4Accumulable.hh"
+#include "G4GenericAnalysisManager.hh"
 #include <tools/histo/h1d>
 #include <tools/histo/h2d>
 
@@ -46,11 +47,11 @@ class Analysis {
     G4int eDepHist2;
     G4int eDepHistTot;
     G4int primEneHist;
-    G4int primPosHist;
     G4String convergenceName;
     G4bool isHe3;
     G4Accumulable<G4double> volumeCurrent = 0.;
     G4Accumulable<G4double> pubeCurrent = 0.;
+    G4GenericAnalysisManager* fManager;
 };
 
 #endif

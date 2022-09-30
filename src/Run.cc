@@ -64,7 +64,6 @@ void Run::RecordEvent(const G4Event* anEvent)
   if (primary->GetG4code()->GetParticleName() == "neutron") {
     G4double primEnergy = primary->GetKineticEnergy();
     myAnalysis->FillPrimaryEne(primEnergy/MeV);
-    myAnalysis->FillPrimaryPos(primPos.getX()/cm, primPos.getY()/cm);
   }
   G4HCofThisEvent* hce = anEvent->GetHCofThisEvent();
   if (!hce) return; 
