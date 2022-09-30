@@ -39,12 +39,15 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 SteppingAction::SteppingAction()
-{}
+{
+  fScatteringRegion = nullptr;
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 SteppingAction::~SteppingAction()
-{}
+{
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -70,6 +73,8 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
   if (step->GetTrack()->GetParticleDefinition()->GetParticleName() != "neutron") {
     step->GetTrack()->SetTrackStatus(fStopAndKill);
   }
+
+  return;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
