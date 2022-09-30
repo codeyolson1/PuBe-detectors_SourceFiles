@@ -11,6 +11,9 @@
 #include "G4NistManager.hh"
 #include "globals.hh"
 #include "G4Region.hh"
+#include "DetectorMessenger.hh"
+#include "G4PVPlacement.hh"
+
 class G4VPhysicalVolume;
 class G4LogicalVolume;
 
@@ -24,16 +27,19 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
     virtual G4VPhysicalVolume* Construct();
     virtual void ConstructSDandField();
+    DetectorMessenger* fMessenger;
 
   private:
     std::map<std::string, G4Material*> fmats;
     G4bool isHe3;
     G4Region* scatteringRegion;
+    G4PVPlacement* fFluxScorerPlacement;
+    G4ThreeVector tableCenter;
 
   public:
     void ConstructMaterials();
     inline G4Region* GetScatteringRegion() const { return scatteringRegion; }
-
+    void SetDetOffset(G4double);
     
 
 };

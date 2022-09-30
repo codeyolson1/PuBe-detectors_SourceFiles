@@ -46,10 +46,13 @@
 DetectorConstruction::DetectorConstruction(G4bool he3)
 : G4VUserDetectorConstruction()
 {
+  fFluxScorerPlacement = nullptr;
+  tableCenter = G4ThreeVector();
   isHe3 = he3;
   fmats = {};
   ConstructMaterials();
   scatteringRegion = new G4Region("ScatteringRegion");
+  fMessenger = new DetectorMessenger(this);
 
 }
 
@@ -58,6 +61,7 @@ DetectorConstruction::DetectorConstruction(G4bool he3)
 
 DetectorConstruction::~DetectorConstruction()
 {
+  delete fMessenger;
 }
 
 //
@@ -311,7 +315,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   tableX = 121.92*cm;
   tableY = 182.88*cm;
   tableZ = 3.175*cm;
-  G4ThreeVector tableCenter = G4ThreeVector(worldX*0.5 - sWallX - 71.12*cm - xOffset, worldY*0.5 - tableY*0.5 - pillarY - lowPillarY - 30.48*cm + yOffset, -worldZ*0.5 - tableZ*0.5 + floorZ + 76.2*cm + zOffset);
+  tableCenter = G4ThreeVector(worldX*0.5 - sWallX - 71.12*cm - xOffset, worldY*0.5 - tableY*0.5 - pillarY - lowPillarY - 30.48*cm + yOffset, -worldZ*0.5 - tableZ*0.5 + floorZ + 76.2*cm + zOffset);
   // Construction
   G4Box* tableTopSolid = new G4Box("TableTop", 0.5*tableX, 0.5*tableY, 0.5*tableZ);
   G4LogicalVolume* tableTopLogic = new G4LogicalVolume(tableTopSolid, fmats["steel"], "TableTop");
@@ -441,7 +445,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     G4ThreeVector detCenter = G4ThreeVector(shieldCenter.x() + 1.*um, tableCenter.y() - tableY*0.5 + mody*0.5 + detOffset + 1.*um, tableCenter.z() + tableZ*0.5 + modz*0.5 + 1.*um);
     G4Box* fluxScorerSolid = new G4Box("FluxBox", 0.5*modx + 1.*um, 0.5*mody + 1.*um, 0.5*modz + 1.*um);
     G4LogicalVolume* fluxScorerLogic = new G4LogicalVolume(fluxScorerSolid, fmats["air"], "FluxBox");
-    new G4PVPlacement(0, detCenter, fluxScorerLogic, "FluxBox", logicWorld, false, 0, checkOverlaps);
+    fFluxScorerPlacement = new G4PVPlacement(0, detCenter, fluxScorerLogic, "FluxBox", logicWorld, false, 0, checkOverlaps);
     // Tube Construction
     G4Tubs* ssShellSolid = new G4Tubs("SS Shell", 0, 0.5*(tubeDiam), 0.5*(tubeHeight + inactive), 0, 360.*deg);
     G4LogicalVolume* ssShellLogic = new G4LogicalVolume(ssShellSolid, fmats["steel"], "SS Shell");
@@ -488,11 +492,11 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     tubeHeight = 12.83*cm;
     G4double inactive = 0.63*cm;
     mody = tubeDiam*2. + 4.5*cm; modx = tubeDiam + 2.*cm; modz = tubeHeight + inactive;
-    G4double detOffset = 91.44*cm;
+    G4double detOffset = 60.96*cm;
     G4ThreeVector detCenter = G4ThreeVector(shieldCenter.x() + 1.*um, tableCenter.y() - tableY*0.5 + mody*0.5 + detOffset + 1.*um, tableCenter.z() + tableZ*0.5 + modz*0.5 + 1.*um);
     G4Box* fluxScorerSolid = new G4Box("FluxBox", 0.5*modx + 1.*um, 0.5*mody + 1.*um, 0.5*modz + 1.*um);
     G4LogicalVolume* fluxScorerLogic = new G4LogicalVolume(fluxScorerSolid, fmats["air"], "FluxBox");
-    new G4PVPlacement(0, detCenter, fluxScorerLogic, "FluxBox", logicWorld, false, 0, checkOverlaps);
+    fFluxScorerPlacement = new G4PVPlacement(0, detCenter, fluxScorerLogic, "FluxBox", logicWorld, false, 0, checkOverlaps);
     // Construct BF3 Detectors:
     // SS Shells
     G4Tubs* bf3ShellSolid1 = new G4Tubs("BF3 Shell1", 0, 0.5*(tubeDiam), 0.5*(tubeHeight + inactive), 0., 360.*deg);
@@ -626,4 +630,21 @@ void DetectorConstruction::ConstructSDandField()
   }
 
 
+}
+
+//
+//
+
+void DetectorConstruction::SetDetOffset(G4double offset)
+{
+  G4ThreeVector currLoc = fFluxScorerPlacement->GetTranslation();
+  G4double currOffset = currLoc.getY()/cm - (tableCenter.getY()/cm - 182.88*0.5*cm);
+  G4cout << "Current offset (in cm): " << currOffset << G4endl;
+  G4ThreeVector newLoc = G4ThreeVector(currLoc.x(), tableCenter.y()/cm - 182.88*0.5*cm + offset*cm, currLoc.z());
+  fFluxScorerPlacement->SetTranslation(newLoc);
+  G4double newOffset = newLoc.getY()/cm - (tableCenter.getY()/cm - 182.88*cm*0.5);
+  G4cout << "New offset (in cm): " << newOffset << G4endl;
+
+  G4RunManager::GetRunManager()->GeometryHasBeenModified();
+  return;
 }
