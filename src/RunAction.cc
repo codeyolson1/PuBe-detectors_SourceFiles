@@ -33,7 +33,9 @@ RunAction::RunAction(G4bool He3) : G4UserRunAction()
 //
 //
 RunAction::~RunAction()
-{}
+{
+  delete fMessenger;
+}
 //
 //
 G4Run* RunAction::GenerateRun()
