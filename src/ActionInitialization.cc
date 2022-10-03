@@ -36,5 +36,5 @@ void ActionInitialization::Build() const
 {
   SetUserAction(new PrimaryGeneratorAction);
   SetUserAction(new RunAction(isHe3));
-  SetUserAction(new SteppingAction());
+  //SetUserAction(new SteppingAction());
 }

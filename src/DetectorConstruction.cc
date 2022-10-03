@@ -220,6 +220,13 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 {
   G4bool checkOverlaps = true;
 
+  // Set Production cuts for scatteringRegion:
+  G4ProductionCuts* scatteringCuts = new G4ProductionCuts();
+  scatteringCuts->SetProductionCut(10*cm, "proton");
+  scatteringCuts->SetProductionCut(10*cm, "e-");
+  scatteringCuts->SetProductionCut(10*cm, "e+");
+  scatteringCuts->SetProductionCut(10*cm, "gamma");
+  scatteringRegion->SetProductionCuts(scatteringCuts);
   //
   // World:
   // Params:
