@@ -17,7 +17,7 @@ mkdir -p $SCRATCHDIR
 mkdir -p $CURRENTDIR/outputsHe3/outputHe3bay-$SLURM_JOB_ID
 
 # Copy data to the scratchdirectory:
-cd Geant4/
+cd $HOME/Geant4/
 cp -r data $SCRATCHDIR
 cd $CURRENTDIR
 
