@@ -67,6 +67,8 @@ int main(int argc, char** argv)
   visManager->Initialize();
   // Interactive session generation:
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
+  UImanager->ApplyCommand("/gui/addMenu viewerMenu Viewer");
+  UImanager->ApplyCommand("/gui/addButton viewerMenu Rebuild /vis/viewer/rebuild viewer-0");
 
   if ( !ui ) {
     // batch mode - Apply macros directly 
