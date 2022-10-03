@@ -11,14 +11,19 @@
 #SBATCH --mail-user=codey.olson@utah.edu
 
 # Set up my directories
-setenv SCRATCHDIR /scratch/general/lustre/$USER/$SLURM_JOB_ID
+setenv SCRATCHDIR /scratch/general/vast/$USER/$SLURM_JOB_ID
 setenv CURRENTDIR $HOME/Geant4/gitRepos/PuBe-detectors_SourceFiles
 mkdir -p $SCRATCHDIR
 mkdir -p $CURRENTDIR/outputsHe3/outputHe3bay-$SLURM_JOB_ID
 
+# Copy data to the scratchdirectory:
+cd Geant4/
+cp -r data $SCRATCHDIR
+cd $CURRENTDIR
+
 # Setup the environment
 cd
-source custom1.csh
+source g4ComputeEnv.csh
 cd $CURRENTDIR
 
 # Copy my data into the scratch directory:
