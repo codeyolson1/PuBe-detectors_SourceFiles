@@ -1,6 +1,6 @@
-/control/execute PuBeSpec_updated.mac
 /RunAction/FileName He3Response.root
 /Detector/SetOffset 91.44 cm
+/control/execute PuBeSpec_updated.mac
 # Commands:
 /vis/disable
 /run/beamOn 750000000

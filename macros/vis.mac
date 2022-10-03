@@ -3,7 +3,7 @@
 
 # Draw and verbosity
 /vis/drawVolume worlds
-/vis/viewer/set/autoRefresh false
+/vis/viewer/set/autoRefresh true
 /vis/verbose errors
 
 # Settings
