@@ -9,6 +9,7 @@
 
 #include "G4VUserDetectorConstruction.hh"
 #include "G4NistManager.hh"
+#include "G4Box.hh"
 #include "globals.hh"
 #include "G4Region.hh"
 #include "DetectorMessenger.hh"
@@ -34,7 +35,9 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     G4bool isHe3;
     G4Region* scatteringRegion;
     G4PVPlacement* fFluxScorerPlacement;
+    G4Box* fFluxScorerSolid;
     G4ThreeVector tableCenter;
+    G4double fdetOffset;
 
   public:
     void ConstructMaterials();
