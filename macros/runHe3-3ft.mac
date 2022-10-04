@@ -1,5 +1,5 @@
 /RunAction/FileName He3Response.root
-/Detector/SetOffset 60.96 cm
+/Detector/SetOffset 91.44 cm
 /control/execute PuBeSpec_updated.mac
 # Commands:
 /vis/disable
