@@ -32,7 +32,7 @@ cp -r $CURRENTDIR/macros $SCRATCHDIR
 
 # Move into my scratch directory and run the simulation
 cd $SCRATCHDIR/build
-./pu-be runBF3-5ft.mac bf3
+./pu-be runBF3-5-5ft.mac bf3
 
 # Copy over the output of my file to my home directory
 cp BF3Response.root $CURRENTDIR/outputsBF3/outputBF3bay-$SLURM_JOB_ID

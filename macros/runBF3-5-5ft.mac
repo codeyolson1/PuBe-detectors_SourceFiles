@@ -1,0 +1,7 @@
+/RunAction/FileName BF3Response.root
+/Detector/SetOffset 167.64 cm
+/control/execute PuBeSpec_updated.mac
+# Commands:
+#/vis/disable
+/run/beamOn 300000000
+/vis/enable
